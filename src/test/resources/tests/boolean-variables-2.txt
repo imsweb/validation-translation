@@ -1,0 +1,11 @@
+# two int variables both assigned the result of a boolean call -> should both be defined as boolean
+# @EXPECTED_RESULT@: FAIL
+int var1, var2;
+
+var1 = INLIST (#S"FIELD1", "1,2,3");
+var2 = not INLIST (#S"FIELD1", "1,2,3");
+
+if (var1 OR var2)
+    return FAIL;
+
+return PASS;

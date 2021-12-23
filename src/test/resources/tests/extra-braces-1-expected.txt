@@ -1,0 +1,8 @@
+Functions.GEN_RESET_LOCAL_CONTEXT(binding)
+
+boolean var1
+
+var1 = Functions.GEN_INLIST(untrimmedline.field1, "1,2,3")
+if (var1)
+    return false
+return true

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- don't include auto-generated classes, not much we can do to fix those -->
+    <Match>
+        <Class name="~.+Genedits(Regex)?(Lexer|Parser)"/>
+    </Match>
+    <!-- too many of these, and fixing them would be a huge undertaking, not worth the effort -->
+    <Match>
+        <Bug code="EI,EI2"/>
+    </Match>
+    <!-- the translation itself uses questionable static variables, but changing that would be very difficult -->
+    <Match>
+        <Bug code="MS"/>
+    </Match>
+    <!-- the MetafileUtils should be cleaned up at some point, for not I am ignoring it -->
+    <Match>
+        <Class name="com.imsweb.validation.translation.metafile.MetafileUtils"/>
+        <Bug code="SQL"/>
+    </Match>
+</FindBugsFilter>

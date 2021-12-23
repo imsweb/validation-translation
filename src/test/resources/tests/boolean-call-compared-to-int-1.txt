@@ -1,0 +1,16 @@
+# mix of AND or OR without proper parenthesis; translation should add the parenthesis
+# @EXPECTED_RESULT@: FAIL
+
+if (INLIST (#S"FIELD1", "1,2,3") == 1)
+    return PASS;
+
+if (NOT(INLIST (#S"FIELD1", "1,2,3") == 0))
+    return PASS;
+
+if (0 != INLIST (#S"FIELD1", "1,2,3"))
+    return PASS;
+
+if (NOT(1 != INLIST (#S"FIELD1", "1,2,3")))
+    return PASS;
+
+return FAIL;

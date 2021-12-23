@@ -1,0 +1,7 @@
+# the int variable is assigned a boolean constant (and used in the returned statement)
+# @EXPECTED_RESULT@: PASS
+int var1;
+
+var1 = TRUE;
+
+return var1;

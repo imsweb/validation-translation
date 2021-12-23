@@ -1,0 +1,19 @@
+# mix of AND or OR without proper parenthesis; translation should add the parenthesis
+int var1, var2, var3;
+
+var1 = 1;
+var2 = 1;
+var3 = 0;
+
+# already correct parenthesis, none should be added
+if ((var1 > 0 OR var2 > 0) AND var3 == 0)
+    return FAIL;
+
+# also correct parenthesis
+if (var1 > 0 OR (var2 > 0 AND var3 != 0))
+    return FAIL;
+
+if (var1 > 0 OR var2 == 0 AND var3 < 0 OR INLIST (#S"FIELD1", "1,2,3") && var3 > 1)
+    return FAIL;
+
+return PASS;

@@ -1,0 +1,241 @@
+plugins {
+    id 'java-library'
+    id 'checkstyle'
+    id 'com.github.spotbugs' version '5.0.3'
+    id 'signing'
+    id 'maven-publish'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'org.sonatype.gradle.plugins.scan' version '2.2.2'
+}
+
+group = 'com.imsweb'
+version = file('VERSION').text.trim()
+description = 'This library allows a Genedits Metafile to be translated into Groovy edits that can be executed in the SEER Validation framework.'
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+println "Starting build using JDK ${Runtime.version().feature()}"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api 'com.imsweb:validation:2.25'
+    api 'com.imsweb:naaccr-xml:8.8'
+    api 'com.imsweb:seerutils:5.6'
+    api 'com.imsweb:staging-algorithm-cs:02.05.50.8'
+
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a'
+    implementation 'org.xerial:sqlite-jdbc:3.36.0.2'
+    implementation 'org.apache.logging.log4j:log4j-api:2.17.0'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.imsweb:data-generator:1.25'
+    testImplementation 'org.apache.logging.log4j:log4j-core:2.17.0'
+}
+
+// enforce UTF-8, display the compilation warnings
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
+}
+
+// the Javadoc was made way too strict in Java 8 and it's not worth the time fixing everything!
+tasks.withType(Javadoc) {
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
+
+// generate javadoc and sources (required by Nexus)
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+// customize the manifest
+jar {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'Information Management Services Inc.',
+                'Created-By': System.properties.getProperty('java.vm.version') + ' (' + System.properties.getProperty('java.vm.vendor') + ')',
+                'Built-By': System.getProperty('user.name'),
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version'),
+                'Automatic-Module-Name': 'com.imsweb.validation-translation'
+        )
+    }
+}
+
+// checkstyle plugin settings
+checkstyle {
+    ignoreFailures = false
+    configFile = file('config/checkstyle/checkstyle.xml')
+    configProperties = ['suppressionFile' : file('config/checkstyle/checkstyle-exclude.xml')]
+}
+
+// spotbugs plugin settings
+spotbugs {
+    ignoreFailures = false
+    excludeFilter = file('config/spotbugs/spotbugs-exclude.xml')
+}
+
+// use this task to generate the edits parser for Genedits syntax
+task generateEditsParser {
+    doLast {
+        // create lexer
+        javaexec {
+            main = '-jar'
+            args = ['config/jflex-1.4.2/lib/JFlex.jar',
+                    '--nobak',
+                    '-d',
+                    'src/test/java/com/imsweb/seeredits/genedits/language',
+                    'src/test/resources/syntax/genedits.flex']
+        }
+
+        // create parser
+        javaexec {
+            main = '-jar'
+            args = ['config/jflex-1.4.2/lib/java-cup-11a.jar',
+                    '-symbols',
+                    'GeneditsTokenType',
+                    '-parser',
+                    'GeneditsParser',
+                    '-destdir',
+                    'src/test/java/com/imsweb/seeredits/genedits/language',
+                    'src/test/resources/syntax/genedits.cup']
+        }
+    }
+}
+
+// use this task to generate the regex parser
+task generateRegexParser {
+    doLast {
+        // create lexer
+        javaexec {
+            main = '-jar'
+            args = ['config/jflex-1.4.2/lib/JFlex.jar',
+                    '--nobak',
+                    '-d',
+                    'src/test/java/com/imsweb/seeredits/genedits/language/regex',
+                    'src/test/resources/syntax/regex.flex']
+        }
+
+        // create parser
+        javaexec {
+            main = '-jar'
+            args = ['config/jflex-1.4.2/lib/java-cup-11a.jar',
+                    '-symbols',
+                    'GeneditsRegexToken',
+                    '-parser',
+                    'GeneditsRegexParser',
+                    '-destdir',
+                    'src/test/java/com/imsweb/seeredits/genedits/language/regex',
+                    'src/test/resources/syntax/regex.cup']
+        }
+    }
+}
+
+// Nexus vulnerability scan (https://github.com/sonatype-nexus-community/scan-gradle-plugin)
+ossIndexAudit {
+    dependencyGraph = true
+    printBanner = false
+
+    // only set proxy if running outside of Github Actions
+    if (!System.getenv().GITHUB_ACTIONS) {
+        proxyConfiguration {
+            protocol = 'http'
+            host = 'webproxy-btp.imsweb.com'
+            port = 8080
+        }
+    }
+}
+check.dependsOn 'ossIndexAudit'
+
+// needed to deploy to Maven Central
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId = 'validation-translation'
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Validation Translation'
+                description = 'This project allows a Genedits Metafile to be translated into Groovy edits that can be executed in the SEER Validation framework.'
+                url = 'https://github.com/imsweb/validation-translation'
+                inceptionYear = '2021'
+
+                licenses {
+                    license {
+                        name = 'A modified BSD License (BSD)'
+                        url = 'https://github.com/imsweb/validation/blob/master/LICENSE'
+                        distribution = 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'depryf'
+                        name = 'Fabian Depry'
+                        email = 'depryf@imsweb.com'
+                    }
+                }
+
+                scm {
+                    url = 'https://github.com/imsweb/validation-translation'
+                    connection = 'scm:https://github.com/imsweb/validation-translation.git'
+                    developerConnection = 'scm:git@github.com:imsweb/validation-translation.git'
+                }
+            }
+        }
+    }
+}
+
+// setup JAR signing
+signing {
+    def signingKey = project.findProperty('signing.armored.key') ?: ''
+    def signingPassword = project.findProperty('signing.armored.password') ?: ''
+
+    useInMemoryPgpKeys(signingKey, signingPassword)
+
+    sign publishing.publications.mavenJava
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            stagingProfileId = 'ImsValidationTranslationProfileId'
+        }
+    }
+
+    clientTimeout = java.time.Duration.ofSeconds(300)
+    connectTimeout = java.time.Duration.ofSeconds(60)
+
+    transitionCheckOptions {
+        maxRetries.set(50)
+        delayBetween.set(java.time.Duration.ofMillis(5000))
+    }
+}
+
+// don't try to release a snapshot to a non-snapshot repository, that won't work anyway
+if (version.endsWith('-SNAPSHOT')) {
+    gradle.startParameter.excludedTaskNames += 'signMavenJavaPublication'
+    gradle.startParameter.excludedTaskNames += 'closeAndReleaseSonatypeStagingRepository'
+}
+
+// Gradle wrapper, this allows to build the project without having to install Gradle!
+wrapper {
+    gradleVersion = '7.3.3'
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+

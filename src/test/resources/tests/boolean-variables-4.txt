@@ -1,0 +1,12 @@
+# the int flag is assigned both an int constant and the result of a boolean expression; it's compared to a boolean constant
+# @EXPECTED_RESULT@: PASS
+int flag;
+
+flag = 0;
+
+flag = VAL(#S"FIELD1") != 1;
+
+if (flag == TRUE)
+    ERROR_TEXT("ERROR");
+
+return PASS;

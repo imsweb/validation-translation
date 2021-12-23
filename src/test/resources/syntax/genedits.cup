@@ -1,0 +1,205 @@
+/*
+  Cup definition of the Genedits syntax.
+*/
+
+package com.imsweb.validation.translation.language;
+
+import com.imsweb.validation.translation.language.entity.*;
+
+parser code {:
+
+    public void report_error(String message, Object info) {
+        StringBuilder m = new StringBuilder("Error");
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) {                
+                m.append(" in line "+(s.left+1));   
+                if (s.right >= 0)                    
+                    m.append(", column "+(s.right+1));
+            }
+        }
+        m.append(" : " + message);
+    }
+
+    public void report_fatal_error(String message, Object info) {
+        StringBuilder m = new StringBuilder("Error");
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) {                
+                m.append(" in line "+(s.left+1));   
+                if (s.right >= 0)                    
+                    m.append(", column "+(s.right+1));
+            }
+        }
+        m.append(" : " + message);
+    }
+:};
+
+/* terminals */
+terminal IF, ELSE, WHILE, RETURN, FUNCTION;
+terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
+terminal EQ;
+terminal SPOUND, LPOUND;
+terminal SEMICOLON, COMMA, EMPTY_LINE;
+
+/* terminals with value */
+terminal java.lang.String  ARITHMETHIC_OP,BINARY_OP, UNARY_OP, MINUS_OP;
+terminal java.lang.Integer NUMBER;
+terminal java.lang.String  STRING;
+terminal java.lang.String  CONSTANT;
+terminal java.lang.String  IDENTIFIER;
+terminal java.lang.String  TYPE;
+terminal java.lang.String  COMMENT;
+   
+/* non terminals */
+non terminal ParsedTree parsed_tree;
+non terminal Statements statements, statements_without_braces, statements_with_braces, empty_statements_opt;
+non terminal Statement statement, empty_line_and_comment, statement_with_empty_line_and_comment;
+non terminal Expression expression;
+non terminal ExpressionWithParenthesis expression_with_parenthesis;
+non terminal ArgumentList argument_list_opt, argument_list;
+non terminal VariableDeclaration variable_decleration;
+non terminal java.util.List variable_decleration_list;
+non terminal java.lang.String end_of_line_comment_opt;
+
+precedence left MINUS_OP, ELSE, ARITHMETHIC_OP, BINARY_OP, EMPTY_LINE, COMMENT;
+
+start with parsed_tree;
+
+parsed_tree ::=
+    statements_without_braces:s
+    {: RESULT = new ParsedTree(s); :}
+	;
+
+statements ::=
+    empty_statements_opt:o1 statements_with_braces:ss empty_statements_opt:o2
+    {: RESULT = new Statements(o1, ss, o2); :}
+    | empty_statements_opt:o1 statement:s empty_statements_opt:o2
+    {: RESULT = new Statements(o1, s, o2); :}
+    ;
+
+statements_without_braces ::=
+    statement_with_empty_line_and_comment:s statements_without_braces:ss
+    {: RESULT = new Statements(s, ss); :}
+    | statement_with_empty_line_and_comment:s statements_with_braces:ss
+    {: RESULT = new Statements(s, ss); :}
+    | statements_with_braces:ss statement_with_empty_line_and_comment:s
+    {: RESULT = new Statements(ss, s); :}
+    | statement_with_empty_line_and_comment:s
+    {: RESULT = new Statements(s); :}
+    ;
+    
+statements_with_braces ::=
+    LBRACE statements_without_braces:ss RBRACE empty_statements_opt:e
+    {: RESULT = new Statements(null, ss, e); :}
+	;
+	
+empty_statements_opt ::=
+    {: RESULT = null; :}
+    | empty_line_and_comment:s empty_statements_opt:ss
+    {: RESULT = new Statements(s, ss); :}
+    ;
+
+statement ::= 
+    SEMICOLON end_of_line_comment_opt:o
+    {: RESULT = new MethodInvocationStatement(o); :}
+	| TYPE:t variable_decleration_list:l SEMICOLON end_of_line_comment_opt:o
+    {: RESULT = new DeclarationStatement(t, l, o); :}
+    | variable_decleration:i EQ expression:e SEMICOLON end_of_line_comment_opt:o
+    {: RESULT = new AssignmentStatement(i, e, o); :} 
+	| RETURN expression:e SEMICOLON end_of_line_comment_opt:o
+    {: RESULT = new ReturnStatement(e, o); :}
+    | IDENTIFIER:i LPAREN argument_list_opt:a RPAREN SEMICOLON end_of_line_comment_opt:o
+    {: RESULT = new MethodInvocationStatement(i, a, o); :}
+    | IF LPAREN expression:e RPAREN statements:s1 ELSE statements:s2
+    {: RESULT = new IfThenElseStatement(e, s1, s2); :}
+    | IF LPAREN expression:e RPAREN statements:s1
+    {: RESULT = new IfThenElseStatement(e, s1, null); :}
+    | WHILE LPAREN expression:e RPAREN statements:ss
+    {: RESULT = new WhileStatement(e, ss); :}
+    | FUNCTION IDENTIFIER:i LPAREN RPAREN statements:ss
+    {: RESULT = new FunctionStatement(i, ss); :}
+	; 
+
+end_of_line_comment_opt ::=
+    {: RESULT = null; :}
+    | COMMENT:c
+    {: RESULT = c; :}
+    ;
+
+empty_line_and_comment ::=
+    EMPTY_LINE:e
+    {: RESULT = new EmptyLineStatement(); :}
+    | COMMENT:c
+    {: RESULT = new CommentStatement(c); :}
+    ;
+    
+statement_with_empty_line_and_comment ::=    
+    statement:s
+    {: RESULT = s; :}
+    | empty_line_and_comment:s
+    {: RESULT = s; :}
+    ;
+
+expression ::=
+    expression_with_parenthesis:e
+    {: RESULT = e; :}
+    | CONSTANT:c
+    {: RESULT = new ConstantExpression(c); :}
+    | STRING:s
+    {: RESULT = new LiteralExpression(s.replaceAll("\r?\n", "")); :}
+    | NUMBER:n
+    {: RESULT = new LiteralExpression(String.valueOf(n)); :}
+    | IDENTIFIER:i
+    {: RESULT = new LiteralExpression(i); :}
+    | SPOUND:p STRING:s
+    {: RESULT = new FieldExpression(s.substring(1, s.length() - 1), true); :}
+    | LPOUND STRING:s
+    {: RESULT = new FieldExpression(s.substring(1, s.length() - 1), false); :}
+    | expression:e1 ARITHMETHIC_OP:o empty_statements_opt expression:e2
+    {: RESULT = new OperationExpression(e1, e2, o); :}
+    | expression:e1 BINARY_OP:o empty_statements_opt expression:e2
+    {: RESULT = new OperationExpression(e1, e2, o); :}
+    | expression:e1 MINUS_OP:o empty_statements_opt expression:e2
+    {: RESULT = new OperationExpression(e1, e2, o); :}
+    | UNARY_OP:o expression:e
+    {: RESULT = new OperationExpression(e, o); :}
+    | MINUS_OP:o expression:e
+    {: RESULT = new OperationExpression(e, o); :}
+    | IDENTIFIER:i LPAREN argument_list_opt:a RPAREN
+    {: RESULT = new MethodInvocationExpression(i, a); :}
+    | CONSTANT:i LPAREN argument_list_opt:a RPAREN
+    {: RESULT = new MethodInvocationExpression(i, a); :}
+	;
+
+expression_with_parenthesis ::=
+    LPAREN expression:e RPAREN
+    {: RESULT = new ExpressionWithParenthesis(e); :}
+    ;
+
+variable_decleration_list ::=
+    variable_decleration:v
+    {: RESULT = new java.util.ArrayList(); RESULT.add(v); :}
+    | variable_decleration:v COMMA variable_decleration_list:l
+    {: RESULT = new java.util.ArrayList(); RESULT.add(v); RESULT.addAll(l); :}
+    ;
+    
+variable_decleration ::=    
+    IDENTIFIER:i LBRACK NUMBER:n RBRACK
+    {: RESULT = new VariableDeclaration(i, n); :}
+    | IDENTIFIER:i
+    {: RESULT = new VariableDeclaration(i); :}
+    ; 
+
+argument_list_opt ::=
+    {: RESULT = new ArgumentList(); :}
+    | argument_list:a
+    {: RESULT = new ArgumentList(a); :}
+    ;
+
+argument_list ::=
+    expression:e
+    {: RESULT = new ArgumentList(e); :}
+    | argument_list:a COMMA expression:e
+    {: RESULT = new ArgumentList(a, e); :}
+    ;

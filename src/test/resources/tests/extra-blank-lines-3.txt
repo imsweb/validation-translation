@@ -1,0 +1,6 @@
+# extra line before the inner expression
+if (
+
+(EMPTY(#S"FIELD1") OR AT(#S"FIELD1", "px  p0  ", 4) > 0))
+    return ERROR_TEXT("WHATEVER");
+return PASS;

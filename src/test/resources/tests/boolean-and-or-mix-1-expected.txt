@@ -1,0 +1,11 @@
+Functions.GEN_RESET_LOCAL_CONTEXT(binding)
+
+int var1, var2, var3
+
+var1 = 1
+var2 = 1
+var3 = 0
+
+if ((var1 || var2) && var3)
+    return false
+return true

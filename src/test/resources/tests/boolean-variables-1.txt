@@ -1,0 +1,10 @@
+# the int variable is assigned the result of a boolean call -> should be defined as boolean
+# @EXPECTED_RESULT@: PASS
+int var1;
+
+var1 = INLIST (#S"FIELD1", "1,2,3");
+
+if (var1)
+    return FAIL;
+
+return PASS;

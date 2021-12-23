@@ -1,0 +1,5 @@
+Functions.GEN_RESET_LOCAL_CONTEXT(binding)
+
+if ((Functions.GEN_EMPTY(untrimmedline.field1) || Functions.GEN_AT(untrimmedline.field1, "px  p0  ", 4) > 0))
+    return Functions.GEN_ERROR_TEXT(binding, 'WHATEVER')
+return true

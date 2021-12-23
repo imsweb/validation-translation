@@ -1,0 +1,11 @@
+# mix of AND or OR without proper parenthesis; translation should add the parenthesis
+# @EXPECTED_RESULT@: FAIL
+int ex, flag;
+
+ex = 0;
+flag = 1;
+
+If (ex == 0 or ex == 95 and flag != 11)
+    return FAIL;
+
+return PASS;

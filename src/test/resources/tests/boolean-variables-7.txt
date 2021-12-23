@@ -1,0 +1,7 @@
+# the int flag is assigned both an int constant and the result of a boolean expression; it's compared to a boolean constant
+# @EXPECTED_RESULT@: PASS
+int result;
+
+result = PASS;
+
+return result;

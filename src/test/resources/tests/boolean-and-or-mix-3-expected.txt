@@ -1,0 +1,10 @@
+Functions.GEN_RESET_LOCAL_CONTEXT(binding)
+
+int ex, flag
+
+ex = 0
+flag = 1
+
+if ((ex == 0 || ex == 95) && flag != 11)
+    return false
+return true

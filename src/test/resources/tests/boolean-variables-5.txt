@@ -1,0 +1,7 @@
+# the int variable is assigned a boolean constant
+# @EXPECTED_RESULT@: FAIL
+int var1;
+
+var1 = 3;
+
+return var1;

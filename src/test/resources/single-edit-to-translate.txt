@@ -1,0 +1,270 @@
+if(AT(#S"Type of Reporting Source","7")==0)
+  return PASS;
+
+if(EMPTY(#S"Schema ID"))
+  return PASS;
+
+int dx_year;
+int err_flag;
+
+dx_year = DATE_YEAR_IOP (#S"Date of Diagnosis") ;
+
+If (dx_year == DT_EMPTY or
+     dx_year == DT_ERROR or
+     dx_year < 2018)
+    return PASS;
+
+If (NOT EMPTY (#S"Adenoid Cystic Basaloid Pattern") and
+   AT(#S"Adenoid Cystic Basaloid Pattern","XXX.8XXX.9",5)==0)
+		{
+    	save_text("DCO: Adenoid Cystic Basaloid Pattern must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Adenopathy")and
+    AT(#S"Adenopathy","89",1)==0)
+    	{
+    	save_text("DCO: Adenopathy must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"AFP Post-Orchiectomy Lab Value") and
+     AT(#S"AFP Post-Orchiectomy Lab Value","XXXXX.8XXXXX.9",7)==0)
+    	{
+    	save_text("DCO: AFP Post-Orchiectomy Lab Value must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"AFP Post-Orchiectomy Range") and
+     AT(#S"AFP Post-Orchiectomy Range","89",1)==0)
+    	{
+    	save_text("DCO: AFP Post-Orchiectomy Range must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"AFP Pre-Orchiectomy Lab Value") and
+     AT(#S"AFP Pre-Orchiectomy Lab Value","XXXXX.8XXXXX.9",7)==0)
+    	{
+    	save_text("DCO: AFP Pre-Orchiectomy Lab Value must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"AFP Pre-Orchiectomy Range") and
+     AT(#s"AFP Pre-Orchiectomy Range","89",1)==0)
+    	{
+    	save_text("DCO: AFP Pre-Orchiectomy Range must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"AFP Pretreatment Interpretation") and
+      AT(#S"AFP Pretreatment Interpretation","89",1)==0)
+    	{
+    	save_text("DCO: AFP Pretreatment Interpretation must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"AFP Pretreatment Lab Value") and
+     AT(#S"AFP Pretreatment Lab Value","XXXX.8XXXX.9")==0)
+    	{
+    	save_text("DCO: AFP Pretreatment Lab Value must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"ALK Rearrangement") and
+     AT(#S"ALK Rearrangement","89",1)==0)
+    	{
+    	save_text("DCO: ALK Rearrangement must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Anemia") and
+     AT(#S"Anemia","9")==0)
+    	{
+    	save_text("DCO: Anemia must be blank or unknown");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"B Symptoms") and
+    AT(#S"B Symptoms","89",1)==0)
+    	{
+    	save_text("DCO: B Symptoms must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Bilirubin Pretreatment Total Lab Value") and
+    AT(#S"Bilirubin Pretreatment Total Lab Value","XXX.8XXX.9",5)==0)
+    	{
+    	save_text("DCO: Bilirubin Pretreatment Total Lab Value must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Bilirubin Pretreatment Unit of Measure") and
+     AT(#S"Bilirubin Pretreatment Unit of Measure","89",1)==0)
+    	{
+    	save_text("DCO: Bilirubin Pretreatment Unit of Measure must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Bone Invasion") and
+     AT(#S"Bone Invasion","89",1)==0)
+    	{
+    	save_text("DCO: Bone Invasion must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"BRAF Mutational Analysis") and
+     AT(#S"BRAF Mutational Analysis","89",1)==0)
+    	{
+    	save_text("DCO: BRAF Mutational Analysis must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Brain Molecular Markers") and
+     AT(#S"Brain Molecular Markers","8899",2)==0)
+    	{
+    	save_text("DCO: Brain Molecular Markers must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Breslow Tumor Thickness") and
+    AT(#S"Breslow Tumor Thickness","XX.8XX.9",4)==0)
+    	{
+    	save_text("DCO: Breslow Tumor Thickness must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"CA 19-9 PreTX Lab Value") and
+    AT(#S"CA 19-9 PreTX Lab Value","XXXX.8XXXX.9",6)==0)
+    	{
+    	save_text("DCO: CA19-9 PreTX Lab Value must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"CA-125 Pretreatment Interpretation") and
+    AT(#S"CA-125 Pretreatment Interpretation","89",1)==0)
+    	{
+    	save_text("DCO: CA-125 Pretreatment Interpretation must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"CEA Pretreatment Interpretation") and
+    AT(#S"CEA Pretreatment Interpretation","89",1)==0)
+    	{
+    	save_text("DCO: CEA Pretreatment Interpretation must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Chromosome 19q: Loss of Heterozygosity (LOH)") and
+      AT(#S"Chromosome 19q: Loss of Heterozygosity (LOH)","89",1)==0)
+    	{
+    	save_text("DCO: Chromosome 19q: Loss of Heterozygosity (LOH) must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Chromosome 1p: Loss of Heterozygosity (LOH)") and
+     AT(#S"Chromosome 1p: Loss of Heterozygosity (LOH)","89",1)==0)
+    	{
+    	save_text("DCO: Chromosome 1p: Loss of Heterozygosity (LOH) must be blank, unknown, or invalid");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Chromosome 3 Status") and
+      AT(#S"Chromosome 3 Status","89",1)==0)
+    	{
+    	save_text("DCO: Chromosome 3 Status must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Chromosome 8q Status") and
+     AT(#S"Chromosome 8q Status","89",1)==0)
+    	{
+    	save_text("DCO: Chromosome 8q Status must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Circumferential Resection Margin (CRM)") and
+     AT(#S"Circumferential Resection Margin (CRM)","89",1)==0)
+    	{
+    	save_text("DCO: Circumferential Resection Margin (CRM) must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Creatinine Pretreatment Lab Value") and
+      AT(#S"Creatinine Pretreatment Lab Value","XX.8XX.9",4)==0)
+    	{
+    	save_text("DCO: Creatinine Pretreatment Lab Value must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Creatinine Pretreatment Unit of Measure") and
+      AT(#S"Creatinine Pretreatment Unit of Measure","89",1)==0)
+    	{
+    	save_text("DCO: Creatinine Pretreatment Unit of Measure must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"EGFR Mutational Analysis") and
+     AT(#S"EGFR Mutational Analysis","89",1)==0)
+    	{
+    	save_text("DCO: EGFR Mutational Analysis must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Esophagus and EGJ Tumor Epicenter") and
+	  AT(#S"Esophagus and EGJ Tumor Epicenter","9")==0)
+    	{
+    	save_text("DCO: Esophagus and EGJ Tumor Epicenter must be blank or unknown");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Estrogen Receptor Percent Positive or Range") and
+       AT(#S"Estrogen Receptor Percent Positive or Range","XX8XX9",3)==0)
+    	{
+    	save_text("DCO: Estrogen Receptor Percent Positive or Range must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Estrogen Receptor Summary") and
+    AT(#S"Estrogen Receptor Summary","9")==0)
+    	{
+    	save_text("DCO: Estrogen Receptor Summary must be blank or unknown");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Estrogen Receptor Total Allred Score") and
+     AT(#S"Estrogen Receptor Total Allred Score","X8X9",2)==0)
+    	{
+    	save_text("DCO: Estrogen Receptor Total Allred Score must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Extranodal Extension Clin (non-Head and Neck)") and
+    AT(#S"Extranodal Extension Clin (non-Head and Neck)","89",1)==0)
+    	{
+    	save_text("DCO: Extranodal Extension Clin (non-Head and Neck) must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Extranodal Extension Head and Neck Clinical") and
+      AT(#S"Extranodal Extension Head and Neck Clinical","89",1)==-)
+    	{
+    	save_text("DCO: Extranodal Extension Head and Neck Clinical must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+If (NOT EMPTY (#S"Extranodal Extension Head and Neck Pathological") and
+      AT(#S"Extranodal Extension Head and Neck Pathological","X.8X.9",3)==0)
+    	{
+    	save_text("DCO: Extranodal Extension Head and Neck Pathological must be blank, unknown, or NA");
+		err_flag=1;
+		}
+
+
+
+
+
+
+if (err_flag==1)
+	return FAIL;
+
+return PASS;

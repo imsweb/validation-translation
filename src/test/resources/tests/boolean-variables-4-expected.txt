@@ -1,0 +1,11 @@
+Functions.GEN_RESET_LOCAL_CONTEXT(binding)
+
+boolean flag
+
+flag = false
+
+flag = Functions.GEN_VAL(untrimmedline.field1) != 1
+
+if (flag == true)
+    Functions.GEN_ERROR_TEXT(binding, 'ERROR')
+return true

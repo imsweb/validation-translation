@@ -1,0 +1,4 @@
+# forbidden keywords should be recoded into something else
+char short[2];
+STRCPY(short, "XX");
+return PASS;
