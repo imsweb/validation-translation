@@ -6,6 +6,7 @@ package com.imsweb.validation.translation;
 @SuppressWarnings("unused")
 public class TranslationConfiguration {
 
+    // ID generation is used for edit and set IDs
     enum IdGeneration {
         // the edit/set IDs will be set to the next available number within the validator with the validator ID as a prefix;
         // with this option, previous IDs will be retained for edits with the same tag if that information is provided to the translation
@@ -16,52 +17,78 @@ public class TranslationConfiguration {
         FROM_NAME
     }
 
+    // the metafile name (required)
     private String _metafileName;
 
+    // the path to the directory containing the metafile to be translated (required)
     private String _workingDirectoryPath;
 
+    // the path to the dictionary containing the previous translation; its output will be used as input of the new translation (optional)
     private String _previousWorkingDirectoryPath;
 
-    private String _outputDirectoryName;
-
-    private String _editMappingsFilename;
-
-    private String _setMappingsFilename;
-
-    private String _validatorPropertiesFilename;
-
+    // the translation prefix (required) - example of prefixes: NAACCR, SEER, NPRC (a lot of created resources will use that prefix)
     private String _translationPrefix;
 
+    // the translation version (optional) - if not provided, the "previous" version will be used and incremented, if no previous translation is available, "1.0" will be used
     private String _translationVersion;
 
+    // set to true to increment the minor part of the version (by default the major one is incremented); defaults to false, ignored if a full version is provided
     private boolean _isMinorVersion;
 
+    // the NAACCR version of the metafile, this is used by the translation to lookup field names (optional, if not provided, official NAACCR fields won't be used)
     private String _naaccrVersion;
 
+    // the minimum version of the engine that can be used with the translated edits (optional)
     private String _minValidationEnginVersion;
 
+    // the ID generation method (required, default to INCREMENTAL)
     private IdGeneration _idGeneration;
 
+    // the metafile resolver (required but set to a default value in this class)
     private MetafileResolver _metafileResolver;
 
+    // the field resolver used to derive property names from field names (required but set to a default value in this class)
     private FieldResolver _fieldResolver;
 
+    // the logic resolver, can be used to tweak input logic on-the-fly to fix a syntax issue for example (required but set to a default value in this class)
     private LogicResolver _logicResolver;
 
+    // the runtime generator (required only if source code is generated, set to a default value in this class)
     private RuntimeGenerator _runtimeGenerator;
 
+    // the number of threads to use for compiling the edits (defaults to 2)
     private int _numCompilationThreads;
 
+    // whether the source code should be generated
     private boolean _generateGroovySourceCode;
 
+    // the path to the directory to use for creating the source code (defaults to the output directory)
     private String _groovySourceCodeDirectoryPath;
 
+    // the package to use for creating the source code (defaults to com.imsweb.validation.edits.translated.xxx where xxx is the translation prefix)
     private String _groovySourceCodePackage;
 
+    // the number of source file to create (defaults to 1) - this only needs to be changed when translating big metafiles
     private int _groovySourceCodeNumFiles;
 
+    // the path to the XML file in the resources of the source code (defaults to edits/translated/xxx where xxx is the translation prefix)
     private String _xmlFileSourcePath;
 
+    // the name of the created output directory (defaults to "output")
+    private String _outputDirectoryName;
+
+    // the name of the created edit mappings file (defaults to "mappings-edits.txt")
+    private String _editMappingsFilename;
+
+    // the name of the created set mappings file (defaults to "mappings-sets.txt")
+    private String _setMappingsFilename;
+
+    // the name of the created validator properties file (defaults to "validator.properties")
+    private String _validatorPropertiesFilename;
+
+    /**
+     * Constructor.
+     */
     public TranslationConfiguration() {
 
         _outputDirectoryName = "output";
