@@ -214,6 +214,9 @@ nexusPublishing {
     repositories {
         sonatype {
             stagingProfileId = 'ImsValidationTranslationProfileId'
+
+            username = project.findProperty("nexusUsername")
+            password = project.findProperty("nexusPassword")
         }
     }
 
