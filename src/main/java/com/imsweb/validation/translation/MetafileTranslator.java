@@ -454,7 +454,7 @@ public class MetafileTranslator {
 
         // resolve the fields (setting the property ID to use)
         for (MetafileField field : mf.getFields())
-            conf.getFieldResolver().resolveField(field, conf);
+            field.setPropertyName(conf.getFieldResolver().resolveField(field, conf));
 
         // **** HANDLE THE VALIDATOR ****
         Validator v = new Validator();
@@ -749,7 +749,7 @@ public class MetafileTranslator {
 
         // we have to "resolve" the fields, which is basically creating the property names from the field names (since Genedits uses field names in the logic)
         for (MetafileField field : metafile.getFields())
-            conf.getFieldResolver().resolveField(field, conf);
+            field.setPropertyName(conf.getFieldResolver().resolveField(field, conf));
 
         return translateEdit(edit, metafile.getTables().stream().collect(Collectors.toMap(MetafileTable::getName, Function.identity())), conf, false);
     }

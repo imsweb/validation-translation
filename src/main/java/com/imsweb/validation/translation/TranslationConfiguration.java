@@ -3,6 +3,10 @@
  */
 package com.imsweb.validation.translation;
 
+import java.util.List;
+
+import com.imsweb.naaccrxml.entity.dictionary.NaaccrDictionary;
+
 @SuppressWarnings("unused")
 public class TranslationConfiguration {
 
@@ -55,6 +59,9 @@ public class TranslationConfiguration {
 
     // the runtime generator (required only if source code is generated, set to a default value in this class)
     private RuntimeGenerator _runtimeGenerator;
+
+    // if provided, the dictionaries will be available to the field resolver (and the default field resolver will use them).
+    private List<NaaccrDictionary> _userDefinedDictionaries;
 
     // the number of threads to use for compiling the edits (defaults to 2)
     private int _numCompilationThreads;
@@ -245,6 +252,18 @@ public class TranslationConfiguration {
 
     public void setRuntimeGenerator(RuntimeGenerator runtimeGenerator) {
         _runtimeGenerator = runtimeGenerator;
+    }
+
+    public List<NaaccrDictionary> getUserDefinedDictionaries() {
+        return _userDefinedDictionaries;
+    }
+
+    public void setUserDefinedDictionaries(List<NaaccrDictionary> userDefinedDictionaries) {
+        _userDefinedDictionaries = userDefinedDictionaries;
+    }
+
+    public boolean isGenerateGroovySourceCode() {
+        return _generateGroovySourceCode;
     }
 
     public int getNumCompilationThreads() {
