@@ -63,6 +63,7 @@ import com.imsweb.validation.translation.language.GeneditsParser;
 import com.imsweb.validation.translation.language.entity.ParsedTree;
 import com.imsweb.validation.translation.metafile.Metafile;
 import com.imsweb.validation.translation.metafile.MetafileAgency;
+import com.imsweb.validation.translation.metafile.MetafileColumnMetaData;
 import com.imsweb.validation.translation.metafile.MetafileEdit;
 import com.imsweb.validation.translation.metafile.MetafileField;
 import com.imsweb.validation.translation.metafile.MetafileSet;
@@ -700,8 +701,12 @@ public class MetafileTranslator {
         buf.setLength(buf.length() - 1);
         buf.append("],");
 
-        // translate used headers into used columns index
-        Set<Integer> usedColumnIdx = usedHeaders.stream().map(s -> mfTable.getHeaders().indexOf(s)).collect(Collectors.toSet());
+        // translate used headers into used columns index (value is the type of column to know if we have to quote it or not)
+        Map<Integer, String> usedColumnIdx = new HashMap<>();
+        for (String header : usedHeaders) {
+            MetafileColumnMetaData metadata = mfTable.getMetaData() == null ? null : mfTable.getMetaData().get(header);
+            usedColumnIdx.put(mfTable.getHeaders().indexOf(header), metadata != null && metadata.getColumnType() != null ? metadata.getColumnType() : "VARCHAR");
+        }
 
         // write content
         for (int rowIdx = 0; rowIdx < mfTable.getContent().size(); rowIdx++) {
@@ -710,9 +715,16 @@ public class MetafileTranslator {
                 throw new RuntimeException(mfTable.getName() + " (row " + rowIdx + ") - was expecting " + mfTable.getHeaders().size() + " fields, got " + row.size());
             buf.append("[");
             for (int colIdx = 0; colIdx < row.size(); colIdx++) {
-                if (usedColumnIdx.contains(colIdx)) {
+                String colType = usedColumnIdx.get(colIdx);
+                if (colType != null) {
                     String val = Objects.toString(row.get(colIdx), ""); // recent versions have started to include NULL values in their tables
-                    buf.append("'").append(val.replaceAll("'", "\\\\'")).append("'").append(",");
+
+                    if ("CHAR".equals(colType) || "VARCHAR".equals(colType))
+                        buf.append("'").append(val.replaceAll("'", "\\\\'")).append("'");
+                    else
+                        buf.append(val);
+
+                    buf.append(",");
                 }
             }
             buf.setLength(buf.length() - 1);
