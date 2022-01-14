@@ -3,6 +3,7 @@
  */
 package com.imsweb.validation.translation;
 
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -27,6 +28,9 @@ public class TranslationResult {
 
     // the "old" mapping keyed by edit name
     private Map<String, TranslationMapping> _namesMapping;
+
+    // the translation errors
+    private List<String> _translateErrorMessages;
 
     public Validator getValidator() {
         return _validator;
@@ -74,5 +78,13 @@ public class TranslationResult {
 
     public void setNamesMapping(Map<String, TranslationMapping> namesMapping) {
         _namesMapping = namesMapping;
+    }
+
+    public List<String> getTranslateErrorMessages() {
+        return _translateErrorMessages;
+    }
+
+    public void setTranslateErrorMessages(List<String> translateErrorMessages) {
+        _translateErrorMessages = translateErrorMessages;
     }
 }
