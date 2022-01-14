@@ -15,6 +15,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -341,6 +342,12 @@ public class MetafileTranslator {
             conf.getRuntimeGenerator().createRuntimeFiles(v, conf);
         }
 
+        if (!result.getTranslateErrorMessages().isEmpty()) {
+            System.out.println("\r\n\r\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            _LOG.info("Some errors were reported during the translation (they were logged earlier):\r\n" + String.join("\r\n", result.getTranslateErrorMessages()));
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        }
+
         return result;
     }
 
@@ -443,6 +450,7 @@ public class MetafileTranslator {
     }
 
     protected TranslationResult createValidator(Metafile mf, TranslationConfiguration conf, PreviousTranslationInfo previousInfo) throws TranslationException {
+        List<String> errors = new ArrayList<>();
 
         String mfPrefix = conf.getTranslationPrefix();
         String ruleIdPrefix = mfPrefix.toUpperCase() + "-";
@@ -497,6 +505,8 @@ public class MetafileTranslator {
 
             // translate the edit logic
             EditTranslationResult result = translateEdit(edit, tables, conf, true);
+            if (result.getTranslationErrorMessage() != null)
+                errors.add(" > unable to translate \"" + edit.getName() + "\" (the logic was copied into a failure file): " + result.getTranslationErrorMessage());
 
             // build rule
             Rule r = new Rule();
@@ -621,9 +631,12 @@ public class MetafileTranslator {
         }
 
         // sanity check on rule messages
-        for (Rule r : v.getRules())
-            if (r.getMessage().contains("%F1") || r.getMessage().contains("%F2") || r.getMessage().equals("This edit has no default error message"))
-                _LOG.info("!!! Message was not properly fixed for " + r.getId() + ": " + r.getMessage());
+        for (Rule r : v.getRules()) {
+            if (r.getMessage().contains("%F1") || r.getMessage().contains("%F2") || r.getMessage().equals("This edit has no default error message")) {
+                _LOG.error("!!! Message was not properly fixed for " + r.getId() + ": " + r.getMessage());
+                errors.add(" > message was not properly fixed (field names were not replaced) for \"" + r.getName() + "\"" + ": " + r.getMessage());
+            }
+        }
 
         TranslationResult result = new TranslationResult();
         result.setValidator(v);
@@ -631,6 +644,7 @@ public class MetafileTranslator {
         result.setNewSetsMappings(newSetsMappings);
         result.setUsedTablesAndIndexes(usedTablesAndIndexes);
         result.setNamesMapping(namesMappings);
+        result.setTranslateErrorMessages(errors);
 
         return result;
     }
@@ -778,6 +792,7 @@ public class MetafileTranslator {
         }
         catch (Exception e) {
             _LOG.error("  > !!! Unable to parse '" + edit.getName() + "': " + e.getMessage());
+            output.setTranslationErrorMessage(e.getMessage());
             output.setGroovy("// This edit could not be translated because it contains invalid syntax.\n\nreturn true");
             output.setUsedTablesAndIndexes(new HashMap<>());
             if (createFailureFiles) {

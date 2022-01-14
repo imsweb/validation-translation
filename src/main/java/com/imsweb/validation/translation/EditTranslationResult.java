@@ -12,6 +12,8 @@ public class EditTranslationResult {
     // keys are the table names, values are the indexes; fore each index: keys are the index names, values are the list of columns they use
     private Map<String, TranslationTable> _usedTablesAndIndexes;
 
+    private String _translationErrorMessage;
+
     public String getGroovy() {
         return _groovy;
     }
@@ -26,5 +28,13 @@ public class EditTranslationResult {
 
     public void setUsedTablesAndIndexes(Map<String, TranslationTable> usedTablesAndIndexes) {
         _usedTablesAndIndexes = usedTablesAndIndexes;
+    }
+
+    public String getTranslationErrorMessage() {
+        return _translationErrorMessage;
+    }
+
+    public void setTranslationErrorMessage(String translationErrorMessage) {
+        _translationErrorMessage = translationErrorMessage;
     }
 }
