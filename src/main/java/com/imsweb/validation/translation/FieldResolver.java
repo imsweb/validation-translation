@@ -5,6 +5,7 @@ package com.imsweb.validation.translation;
 
 import com.imsweb.naaccrxml.NaaccrFormat;
 import com.imsweb.naaccrxml.NaaccrXmlDictionaryUtils;
+import com.imsweb.naaccrxml.entity.dictionary.NaaccrDictionary;
 import com.imsweb.naaccrxml.entity.dictionary.NaaccrDictionaryGroupedItem;
 import com.imsweb.naaccrxml.entity.dictionary.NaaccrDictionaryItem;
 import com.imsweb.validation.translation.metafile.MetafileField;
@@ -12,7 +13,7 @@ import com.imsweb.validation.translation.metafile.MetafileField;
 @SuppressWarnings("unused")
 public class FieldResolver {
 
-    public void resolveField(MetafileField field, TranslationConfiguration conf) throws TranslationException {
+    public String resolveField(MetafileField field, TranslationConfiguration conf) throws TranslationException {
         Integer naaccrNumber = field.getNumber();
         if (naaccrNumber == null)
             throw new TranslationException("Unable to find Item Number for field " + field.getName());
@@ -30,13 +31,26 @@ public class FieldResolver {
                 if (groupedItem != null)
                     propertyName = groupedItem.getNaaccrId();
             }
+
+            // if we don't have a property name, see if we can get it from the provided user-defined dictionaries
+            if (propertyName == null && conf.getUserDefinedDictionaries() != null) {
+                for (NaaccrDictionary dictionary : conf.getUserDefinedDictionaries()) {
+                    if (dictionary.getNaaccrVersion() == null || dictionary.getNaaccrVersion().equals(conf.getNaaccrVersion())) {
+                        NaaccrDictionaryItem nonStandardItem = dictionary.getItemByNaaccrNum(naaccrNumber);
+                        if (nonStandardItem != null) {
+                            propertyName = nonStandardItem.getNaaccrId();
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         // if we don't have a property name yet, try to apply a last step to get it
         if (propertyName == null)
             propertyName = resolveFieldPostDictionary(field, conf);
 
-        field.setPropertyName(propertyName);
+        return propertyName;
     }
 
     protected String resolveFieldPreDictionary(MetafileField field, TranslationConfiguration conf) {
