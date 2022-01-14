@@ -159,8 +159,8 @@ public final class MetafileUtils {
                     // in the translation, but a better approach would be to parse the trigger, gather the concatenated columns, and add their size...
                     data.setColumnSize(result2.getMetaData().getPrecision(i));
                     columnsMetaData.put(result2.getMetaData().getColumnName(i), data);
-                    // metafiles support "integer" but nobody use them; if somebody starts using them I will have to change the main translation to not add quotes...
-                    if (!"CHAR".equals(result2.getMetaData().getColumnTypeName(i)) && !"VARCHAR".equals(result2.getMetaData().getColumnTypeName(i)))
+                    // make sure we expect the column type
+                    if (!"CHAR".equals(result2.getMetaData().getColumnTypeName(i)) && !"VARCHAR".equals(result2.getMetaData().getColumnTypeName(i)) && !"INTEGER".equals(result2.getMetaData().getColumnTypeName(i)))
                         throw new RuntimeException("Unsupported type for table '" + table.getName() + ": " + result2.getMetaData().getColumnTypeName(i));
                 }
                 table.setHeaders(headers);
