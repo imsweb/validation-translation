@@ -302,6 +302,15 @@ public class GeneditsRegexUtilsTest {
         Assert.assertFalse(" 000".matches(regex));
         Assert.assertTrue("  00".matches(regex));
         Assert.assertTrue("   0".matches(regex));
+    }
 
+    @Test
+    public void testEmptyRegex() {
+        String regex = GeneditsRegexUtils.translateRegex("  ");
+        Assert.assertEquals("\\s{2}", regex);
+        Assert.assertTrue("  ".matches(regex));
+        Assert.assertFalse(" ".matches(regex));
+        Assert.assertFalse("   ".matches(regex));
+        Assert.assertFalse("XX".matches(regex));
     }
 }
