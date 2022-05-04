@@ -1,5 +1,9 @@
 ## Validation Translation Version History
 
+**Version 1.2 (not released yet)**
+
+- Updated validation library from version 2.27 to version 2.28.
+
 **Version 1.1**
 
 - Updated validation library from version 2.25 to version 2.27.
