@@ -6,6 +6,9 @@
 - Added new ID generation based on tags without validator prefix.
 - Added support for a new dry mode in the configuration.
 - Updated validation library from version 2.27 to version 2.28.
+- Updated naaccr-xml library from version 8.10 to version 9.0.
+- Updated SQLite driver from version 3.36.0.3 to version 3.39.2.0.
+- Updated log4j-api from version 2.17.2 to version 2.18.0.
 
 **Version 1.1**
 

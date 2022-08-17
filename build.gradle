@@ -24,18 +24,18 @@ repositories {
 
 dependencies {
     api 'com.imsweb:validation:2.28'
-    api 'com.imsweb:naaccr-xml:8.10'
+    api 'com.imsweb:naaccr-xml:9.0'
     api 'com.imsweb:seerutils:5.6'
     api 'com.imsweb:staging-algorithm-cs:02.05.50.10'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a'
-    implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
-    implementation 'org.apache.logging.log4j:log4j-api:2.17.2'
+    implementation 'org.xerial:sqlite-jdbc:3.39.2.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.18.0'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.imsweb:data-generator:1.28'
-    testImplementation 'org.apache.logging.log4j:log4j-core:2.17.2'
+    testImplementation 'org.apache.logging.log4j:log4j-core:2.18.0'
 }
 
 // enforce UTF-8, display the compilation warnings
