@@ -334,7 +334,7 @@ public class RuntimeGenerator {
             writer.write("    @Override\r\n");
             writer.write("    public CompiledRules getCompiledRules() {\r\n");
             if (conf.getGroovySourceCodeNumFiles() == 1)
-                writer.write("        return new " + RuntimeUtils.createCompiledRulesClassName(v.getId()) + "()'\r\n");
+                writer.write("        return new " + RuntimeUtils.createCompiledRulesClassName(v.getId()) + "()\r\n");
             else {
                 writer.write("        return new CompiledRulesBundle(\r\n");
                 for (int i = 1; i <= conf.getGroovySourceCodeNumFiles(); i++) {
