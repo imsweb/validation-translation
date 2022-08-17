@@ -99,6 +99,9 @@ public class TranslationConfiguration {
     // the name of the created validator properties file (defaults to "validator.properties")
     private String _validatorPropertiesFilename;
 
+    // if true, no file will be created/modified; only the logs will be active
+    private boolean _dryMode;
+
     /**
      * Constructor.
      */
@@ -122,6 +125,8 @@ public class TranslationConfiguration {
 
         _generateGroovySourceCode = false;
         _groovySourceCodeNumFiles = 1;
+
+        _dryMode = false;
     }
 
     public String getMetafileName() {
@@ -318,5 +323,13 @@ public class TranslationConfiguration {
 
     public void setXmlFileSourcePath(String xmlFileSourcePath) {
         _xmlFileSourcePath = xmlFileSourcePath;
+    }
+
+    public boolean isDryMode() {
+        return _dryMode;
+    }
+
+    public void setDryMode(boolean dryMode) {
+        _dryMode = dryMode;
     }
 }

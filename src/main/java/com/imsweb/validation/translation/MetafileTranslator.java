@@ -5,12 +5,12 @@ package com.imsweb.validation.translation;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -80,7 +80,7 @@ import static com.imsweb.validation.ValidationEngine.CONTEXT_TYPE_TABLE_INDEX_DE
  * <br/><br/>
  * See the readme file of the project for more information on how to use the class.
  */
-@SuppressWarnings({"StringBufferReplaceableByString", "UnusedReturnValue"})
+@SuppressWarnings({"StringBufferReplaceableByString", "UnusedReturnValue", "java:S2629", "java:S3457"})
 public class MetafileTranslator {
 
     private static final Logger _LOG = LogManager.getLogger(MetafileTranslator.class);
@@ -301,13 +301,18 @@ public class MetafileTranslator {
         else
             _LOG.info("  > no set got removed");
 
+        if (conf.isDryMode()) {
+            _LOG.info("  *** dry mode on, skipping file creation ***");
+            return result;
+        }
+
         // write the files
         File validatorFile = new File(outputDir, conf.getTranslationPrefix().toLowerCase() + "-translated-edits.xml");
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(validatorFile), StandardCharsets.US_ASCII)) {
+        try (Writer writer = new OutputStreamWriter(Files.newOutputStream(validatorFile.toPath()), StandardCharsets.US_ASCII)) {
             ValidationXmlUtils.writeValidatorToXml(result.getValidator(), writer);
         }
         File gzFile = new File(outputDir, conf.getTranslationPrefix().toLowerCase() + "-translated-edits.xml.gz");
-        try (GZIPOutputStream gzWriter = new GZIPOutputStream(new FileOutputStream(gzFile))) {
+        try (GZIPOutputStream gzWriter = new GZIPOutputStream(Files.newOutputStream(gzFile.toPath()))) {
             ValidationXmlUtils.writeValidatorToXml(result.getValidator(), gzWriter);
         }
 
@@ -315,7 +320,7 @@ public class MetafileTranslator {
         previousInfo.writeMappings(result.getNewEditsMappings(), new File(outputDir, conf.getEditMappingsFilename()));
         previousInfo.writeMappings(result.getNewSetsMappings(), new File(outputDir, conf.getSetMappingsFilename()));
         result.setNewValidatorProperties(ValidationXmlUtils.getXmlValidatorRootAttributes(validatorFile.toURI().toURL()));
-        try (Writer propsWriter = new OutputStreamWriter(new FileOutputStream(new File(outputDir, conf.getValidatorPropertiesFilename())), StandardCharsets.US_ASCII)) {
+        try (Writer propsWriter = new OutputStreamWriter(Files.newOutputStream(new File(outputDir, conf.getValidatorPropertiesFilename()).toPath()), StandardCharsets.US_ASCII)) {
             for (Entry<String, String> entry : new TreeMap<>(ValidationXmlUtils.getXmlValidatorRootAttributes(validatorFile.toURI().toURL())).entrySet())
                 propsWriter.write(entry.getKey() + "=" + entry.getValue() + "\r\n"); // can't just write a Properties object bc Java writes the current date!
         }
@@ -343,9 +348,9 @@ public class MetafileTranslator {
         }
 
         if (!result.getTranslateErrorMessages().isEmpty()) {
-            System.out.println("\r\n\r\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            _LOG.info("\r\n\r\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             _LOG.info("Some errors were reported during the translation (they were logged earlier):\r\n" + String.join("\r\n", result.getTranslateErrorMessages()));
-            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            _LOG.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         }
 
         return result;
@@ -362,7 +367,7 @@ public class MetafileTranslator {
         // translation prefix
         if (conf.getTranslationPrefix() == null)
             throw new TranslationException("Translation prefix is required");
-        if (!conf.getTranslationPrefix().matches("[A-Z0-9_-]+"))
+        if (!conf.getTranslationPrefix().matches("[A-Z\\d_-]+"))
             throw new TranslationException("Translation prefix can only contain uppercase letters, digits, underscores and dashes");
 
         if (validateFilesAndDirs) {
@@ -600,7 +605,8 @@ public class MetafileTranslator {
         currentIdx++;
         Map<String, TranslationMapping> namesMappings = new HashMap<>(); /// current name to old mapping
         for (MetafileSet mfSet : mf.getSets()) {
-            String setTag = mfSet.getTag(), setName = mfSet.getName();
+            String setTag = mfSet.getTag();
+            String setName = mfSet.getName();
 
             EmbeddedSet set = new EmbeddedSet();
             set.setSetId(ValidationServices.getInstance().getNextSetSequence());
@@ -714,7 +720,7 @@ public class MetafileTranslator {
         buf.append("[");
         for (String s : mfTable.getHeaders())
             if (usedHeaders.contains(s))
-                buf.append("'").append(s.replaceAll("'", "\\\\'")).append("',");
+                buf.append("'").append(s.replace("'", "\\\\'")).append("',");
         buf.setLength(buf.length() - 1);
         buf.append("],");
 
@@ -737,7 +743,7 @@ public class MetafileTranslator {
                     String val = Objects.toString(row.get(colIdx), ""); // recent versions have started to include NULL values in their tables
 
                     if ("CHAR".equals(colType) || "VARCHAR".equals(colType))
-                        buf.append("'").append(val.replaceAll("'", "\\\\'")).append("'");
+                        buf.append("'").append(val.replace("'", "\\\\'")).append("'");
                     else
                         buf.append(val);
 
