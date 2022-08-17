@@ -2,7 +2,9 @@
 
 **Version 1.2 (not released yet)**
 
+- Fixed extra quote being generated at the end of a method name for runtime resources.
 - Added new ID generation based on tags without validator prefix.
+- Added support for a new dry mode in the configuration.
 - Updated validation library from version 2.27 to version 2.28.
 
 **Version 1.1**
