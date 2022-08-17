@@ -100,7 +100,7 @@ public class TranslationConfiguration {
     private String _validatorPropertiesFilename;
 
     // if true, no file will be created/modified; only the logs will be active
-    private boolean _dryMode;
+    private boolean _dryRunMode;
 
     /**
      * Constructor.
@@ -126,7 +126,7 @@ public class TranslationConfiguration {
         _generateGroovySourceCode = false;
         _groovySourceCodeNumFiles = 1;
 
-        _dryMode = false;
+        _dryRunMode = false;
     }
 
     public String getMetafileName() {
@@ -325,11 +325,11 @@ public class TranslationConfiguration {
         _xmlFileSourcePath = xmlFileSourcePath;
     }
 
-    public boolean isDryMode() {
-        return _dryMode;
+    public boolean isDryRunMode() {
+        return _dryRunMode;
     }
 
-    public void setDryMode(boolean dryMode) {
-        _dryMode = dryMode;
+    public void setDryRunMode(boolean dryRunMode) {
+        _dryRunMode = dryRunMode;
     }
 }

@@ -301,8 +301,8 @@ public class MetafileTranslator {
         else
             _LOG.info("  > no set got removed");
 
-        if (conf.isDryMode()) {
-            _LOG.info("  > dry mode on, skipping file creation...");
+        if (conf.isDryRunMode()) {
+            _LOG.info("  > dry run mode on, skipping file creation...");
             return result;
         }
 
