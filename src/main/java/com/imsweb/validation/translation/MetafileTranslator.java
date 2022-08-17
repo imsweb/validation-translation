@@ -501,7 +501,8 @@ public class MetafileTranslator {
         // **** HANDLE THE RULES ****
         SortedMap<String, TranslationTable> usedTablesAndIndexes = new TreeMap<>();
         for (MetafileEdit edit : mf.getEdits()) {
-            String tag = edit.getTag(), name = edit.getName();
+            String tag = edit.getTag();
+            String name = edit.getName();
 
             // translate the edit logic
             EditTranslationResult result = translateEdit(edit, tables, conf, true);
@@ -513,8 +514,10 @@ public class MetafileTranslator {
             r.setRuleId(ValidationServices.getInstance().getNextRuleSequence());
             if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_NAME)
                 r.setId(name);
-            else if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_TAG)
+            else if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_TAG_WITH_PREFIX)
                 r.setId(ruleIdPrefix + SeerUtils.pad(tag, 5, "0", true));
+            else if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_TAG_WITHOUT_PREFIX)
+                r.setId(tag);
             else if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.INCREMENTAL) {
                 TranslationMapping prevEditDto = previousInfo.getPreviousMappingForEditTag(tag, name);
                 if (prevEditDto != null)
@@ -601,7 +604,7 @@ public class MetafileTranslator {
 
             EmbeddedSet set = new EmbeddedSet();
             set.setSetId(ValidationServices.getInstance().getNextSetSequence());
-            if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_TAG)
+            if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_TAG_WITH_PREFIX)
                 set.setId(mfPrefix.toUpperCase() + "-SET-" + SeerUtils.pad(setTag, 3, "0", true));
             else if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_NAME)
                 set.setId(setName);

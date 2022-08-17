@@ -2,6 +2,7 @@
 
 **Version 1.2 (not released yet)**
 
+- Added new ID generation based on tags without validator prefix.
 - Updated validation library from version 2.27 to version 2.28.
 
 **Version 1.1**

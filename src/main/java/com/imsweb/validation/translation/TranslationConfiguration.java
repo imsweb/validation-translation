@@ -12,11 +12,17 @@ public class TranslationConfiguration {
 
     // ID generation is used for edit and set IDs
     enum IdGeneration {
+
         // the edit/set IDs will be set to the next available number within the validator with the validator ID as a prefix;
         // with this option, previous IDs will be retained for edits with the same tag if that information is provided to the translation
         INCREMENTAL,
+
         // the edit/set IDs will be set to their metafile tag with the validator ID as a prefix
-        FROM_TAG,
+        FROM_TAG_WITH_PREFIX,
+
+        // the edit/set IDs will be set to their metafile tag without the validator ID as prefix
+        FROM_TAG_WITHOUT_PREFIX,
+
         // the edit/set IDS will be set to their metafile name
         FROM_NAME
     }
