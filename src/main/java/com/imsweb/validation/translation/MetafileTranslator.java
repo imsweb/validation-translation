@@ -302,7 +302,7 @@ public class MetafileTranslator {
             _LOG.info("  > no set got removed");
 
         if (conf.isDryMode()) {
-            _LOG.info("  *** dry mode on, skipping file creation ***");
+            _LOG.info("  > dry mode on, skipping file creation...");
             return result;
         }
 
