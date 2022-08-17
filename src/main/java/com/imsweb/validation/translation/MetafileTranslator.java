@@ -612,6 +612,8 @@ public class MetafileTranslator {
             set.setSetId(ValidationServices.getInstance().getNextSetSequence());
             if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_TAG_WITH_PREFIX)
                 set.setId(mfPrefix.toUpperCase() + "-SET-" + SeerUtils.pad(setTag, 3, "0", true));
+            else if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_TAG_WITHOUT_PREFIX)
+                set.setId(setTag);
             else if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.FROM_NAME)
                 set.setId(setName);
             else if (conf.getIdGeneration() == TranslationConfiguration.IdGeneration.INCREMENTAL) {
