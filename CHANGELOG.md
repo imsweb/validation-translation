@@ -1,5 +1,10 @@
 ## Validation Translation Version History
 
+**Version 1.3**
+
+- Updated validation library from version 2.28 to version 3.0.
+- Updated naaccr-xml library from version 9.0 to version 9.1.
+
 **Version 1.2**
 
 - Fixed extra quote being generated at the end of a method name for runtime resources.
