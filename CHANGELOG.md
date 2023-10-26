@@ -2,8 +2,10 @@
 
 **Version 1.3**
 
-- Updated validation library from version 2.28 to version 3.0.
-- Updated naaccr-xml library from version 9.0 to version 9.1.
+- Updated validation library from version 2.28 to version 3.2.
+- Updated naaccr-xml library from version 9.0 to version 10.1.
+- Updated SQLite driver from version 3.39.2.0 to version 3.43.2.1.
+- Updated log4j-api from version 2.18.0 to version 2.21.1.
 
 **Version 1.2**
 
