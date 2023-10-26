@@ -5,15 +5,15 @@ package com.imsweb.validation.translation;
 
 public class TranslationMapping {
 
-    public String _tag;
+    private String _tag;
 
-    public String _name;
+    private String _name;
 
-    public String _id;
+    private String _id;
 
-    public String _hash;
+    private String _hash;
 
-    public String _forcedTag;
+    private String _forcedTag;
 
     public TranslationMapping() {
     }

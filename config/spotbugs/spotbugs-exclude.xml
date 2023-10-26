@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
-    <!-- don't include auto-generated classes, not much we can do to fix those -->
     <Match>
+        <!-- don't include auto-generated classes, not much we can do to fix those -->
         <Class name="~.+Genedits(Regex)?(Lexer|Parser)"/>
     </Match>
-    <!-- too many of these, and fixing them would be a huge undertaking, not worth the effort -->
     <Match>
+        <!-- too many of these, and fixing them would be a huge undertaking, not worth the effort -->
         <Bug code="EI,EI2"/>
     </Match>
-    <!-- the translation itself uses questionable static variables, but changing that would be very difficult -->
     <Match>
+        <!-- the translation itself uses questionable static variables, but changing that would be very difficult -->
         <Bug code="MS"/>
     </Match>
-    <!-- the MetafileUtils should be cleaned up at some point, for not I am ignoring it -->
     <Match>
+        <!-- the MetafileUtils should be cleaned up at some point, for not I am ignoring it -->
         <Class name="com.imsweb.validation.translation.metafile.MetafileUtils"/>
         <Bug code="SQL"/>
+    </Match>
+    <Match>
+        <!-- Services/Engine allow to register a different instance; I don't know how to allow that without triggering this check -->
+        <Bug code="MS"/>
+    </Match>
+    <Match>
+         <!-- Do not reuse public identifiers from JSL as class name, fixing this is too disruptive -->
+        <Bug pattern="PI_DO_NOT_REUSE_PUBLIC_IDENTIFIERS_CLASS_NAMES"/>
+    </Match>
+    <Match>
+        <!-- Be wary of letting constructors throw exceptions, not easy to fix, and I don't think that can create a problem -->
+        <Bug pattern="CT_CONSTRUCTOR_THROW"/>
+    </Match>
+    <Match>
+        <!-- Field name shadows publicly available identifier from the Java Standard Library -->
+        <Bug code="PI"/>
     </Match>
 </FindBugsFilter>
