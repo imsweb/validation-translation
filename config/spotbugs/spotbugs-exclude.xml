@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
     <Match>
+        <Class name="~.*\.*Test"/>
+    </Match>
+    <Match>
         <!-- don't include auto-generated classes, not much we can do to fix those -->
         <Class name="~.+Genedits(Regex)?(Lexer|Parser)"/>
     </Match>
