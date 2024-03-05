@@ -49,6 +49,23 @@ conf.setNaaccrVersion("220");
 new MetafileTranslator().executeFullTranslation(conf);
 ```
 
+## Command Line
+The compiled JAR can be executed from the command line to perform a full translation.
+
+**Command Line Options:**
+- `-p`: The working folder containing the metafile
+- `-c`: The file name of the configuration properties file within the working folder
+
+**Example usage:**
+```sh
+$ java -jar validation-translation.jar -c config.properties -p WORKING_DIR
+```
+For an example of a translation configuration, see `examples/config.properties`
+
+## Pre-Compiled Groovy Edits
+For faster loading of large metafiles, the optionally generated Groovy source code can be pre-compiled into bytecode. The folder `examples/compile-groovy` 
+contains an example of a build.gradle and settings.gradle that can be placed in the output folder to generate a JAR containing compiled bytecode.
+
 ## About SEER
 
 This library was developed through the [SEER](http://seer.cancer.gov/) program.

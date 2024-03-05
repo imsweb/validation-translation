@@ -31,10 +31,11 @@ dependencies {
     implementation 'net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a'
     implementation 'org.xerial:sqlite-jdbc:3.43.2.1'
     implementation 'org.apache.logging.log4j:log4j-api:2.21.1'
+    implementation 'commons-cli:commons-cli:1.6.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.21.1'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.imsweb:data-generator:1.31'
-    testImplementation 'org.apache.logging.log4j:log4j-core:2.21.1'
 }
 
 // enforce UTF-8, display the compilation warnings
@@ -67,9 +68,15 @@ jar {
                 'Built-By': System.getProperty('user.name'),
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
-                'Automatic-Module-Name': 'com.imsweb.validation-translation'
+                'Automatic-Module-Name': 'com.imsweb.validation-translation',
+                'Main-Class': 'com.imsweb.validation.translation.MetafileTranslatorCli'
         )
     }
+    
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy "exclude"
 }
 
 // checkstyle plugin settings
