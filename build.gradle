@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-api:2.21.1'
     implementation 'commons-cli:commons-cli:1.6.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.21.1'
+    implementation 'org.slf4j:slf4j-nop:2.0.12'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.imsweb:data-generator:1.31'

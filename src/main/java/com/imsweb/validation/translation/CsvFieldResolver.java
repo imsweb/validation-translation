@@ -2,6 +2,8 @@ package com.imsweb.validation.translation;
 
 import com.imsweb.naaccrxml.NaaccrXmlDictionaryUtils;
 import com.imsweb.validation.translation.metafile.MetafileField;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,8 @@ import java.util.Map;
  */
 @SuppressWarnings("unused")
 public class CsvFieldResolver extends FieldResolver {
+    private static final Logger _LOG = LogManager.getLogger(CsvFieldResolver.class);
+
     private Map<Integer, String> _mappings;
 
     public CsvFieldResolver() {
@@ -45,7 +49,7 @@ public class CsvFieldResolver extends FieldResolver {
                throw new IOException("Invalid line in mapping file: " + line);
             }
             getMappings().put(Integer.parseInt(mapping[0]), mapping[1]);
-            System.out.println("      >> Loaded mapping from " + mappingsFile.getName() + ": " + mapping[0] + "->" + mapping[1]);
+            _LOG.info("      >> Loaded mapping from " + mappingsFile.getName() + ": " + mapping[0] + "->" + mapping[1]);
         }
     }
 
@@ -64,7 +68,7 @@ public class CsvFieldResolver extends FieldResolver {
         // if unable to resolve from the mapping file, create a (properly named) dummy item and warn the user
         if (propName == null) {
             propName = NaaccrXmlDictionaryUtils.createNaaccrIdFromItemName(field.getName());
-            System.out.println("      >> Unsupported field: " + field.getName() + " (#" + field.getNumber() + "); deriving the ID from the name: " + propName);
+            _LOG.info("      >> Unsupported field: " + field.getName() + " (#" + field.getNumber() + "); deriving the ID from the name: " + propName);
         }
         return propName;
     }

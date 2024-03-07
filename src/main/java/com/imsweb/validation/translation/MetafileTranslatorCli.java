@@ -8,6 +8,8 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +20,13 @@ import java.util.List;
 import java.util.Properties;
 
 public class MetafileTranslatorCli {
-    
+    private static final Logger _LOG = LogManager.getLogger(MetafileTranslatorCli.class);
+
     public static void main(String[] args) 
         throws Exception {
         CommandLineParser parser = new DefaultParser();
-        
+
+
         // set up options
         Options opts = new Options();
         opts.addRequiredOption("p", "path", true, "Path to working directory containing metafile where output will be placed");
@@ -134,7 +138,7 @@ public class MetafileTranslatorCli {
             List<NaaccrDictionary> userDictionaries = new ArrayList<NaaccrDictionary>(1);
             NaaccrDictionary dict = NaaccrXmlDictionaryUtils.readDictionary(userDictionaryFile);
             userDictionaries.add(dict);
-            System.out.println("      >> Loaded user dictionary " + userDictionaryFile.getName());
+            _LOG.info("      >> Loaded user dictionary " + userDictionaryFile.getName());
 
             translationConfiguration.setUserDefinedDictionaries(userDictionaries);
         }
