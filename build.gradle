@@ -70,14 +70,8 @@ jar {
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
                 'Automatic-Module-Name': 'com.imsweb.validation-translation',
-                'Main-Class': 'com.imsweb.validation.translation.MetafileTranslatorCli'
         )
     }
-    
-    from {
-        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-    duplicatesStrategy "exclude"
 }
 
 // checkstyle plugin settings
@@ -148,10 +142,33 @@ tasks.register('generateRegexParser') {
     }
 }
 
+// use this task to generate a fat JAR to easily run a CLI
+tasks.register('buildFatJar',Jar) {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Implementation-Vendor': 'Information Management Services Inc.',
+                'Created-By': System.properties.getProperty('java.vm.version') + ' (' + System.properties.getProperty('java.vm.vendor') + ')',
+                'Built-By': System.getProperty('user.name'),
+                'Built-Date': new Date(),
+                'Built-JDK': System.getProperty('java.version'),
+                'Automatic-Module-Name': 'com.imsweb.validation-translation',
+                'Main-Class': 'com.imsweb.validation.translation.MetafileTranslatorCli'
+        )
+    }
+    
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    duplicatesStrategy=DuplicatesStrategy.EXCLUDE
+    with jar
+}
+
 // Nexus vulnerability scan (https://github.com/sonatype-nexus-community/scan-gradle-plugin)
 ossIndexAudit {
     outputFormat = 'DEPENDENCY_GRAPH'
     printBanner = false
+
 
     excludeVulnerabilityIds = [
             'CVE-2022-42003',
