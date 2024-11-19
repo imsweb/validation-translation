@@ -1,5 +1,13 @@
 ## Validation Translation Version History
 
+**Version 2.0**
+
+- Updated the minimum Java language from Java 8 to Java 11.
+- Updated validation library from version 3.2 to version 4.0.
+- Updated naaccr-xml library from version 10.1 to version 11.2.
+- Updated SQLite driver from version 3.43.2.1 to version 3.47.0.0.
+- Updated log4j-api from version 2.18.0 to version 2.24.1.
+
 **Version 1.3**
 
 - Updated validation library from version 2.28 to version 3.2.
