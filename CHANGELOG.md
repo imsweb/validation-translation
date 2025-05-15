@@ -1,5 +1,9 @@
 ## Validation Translation Version History
 
+**Version 2.1**
+
+- Updated dependencies.
+
 **Version 2.0**
 
 - Updated the minimum Java language from Java 8 to Java 11.

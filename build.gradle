@@ -1,14 +1,12 @@
-import java.time.Duration
+import com.vanniktech.maven.publish.*
 
 plugins {
     id 'java-library'
     id 'checkstyle'
-    id 'com.github.spotbugs' version '6.0.26'
-    id 'maven-publish'
-    id 'signing'
-    id 'io.github.gradle-nexus.publish-plugin' version '2.0.0' // publish to Maven Central
-    id 'com.github.ben-manes.versions' version '0.51.0' // check for out-of-date dependencies (run 'dependencyUpdates' manually)
-    id 'org.sonatype.gradle.plugins.scan' version '2.8.3' // scan for vulnerabilities
+    id 'com.vanniktech.maven.publish' version '0.32.0' // publish to Maven Central
+    id 'com.github.ben-manes.versions' version '0.52.0' // check for out-of-date dependencies (run 'dependencyUpdates' manually)
+    id 'com.github.spotbugs' version '6.1.11' // spotbugs code analysis
+    id 'org.sonatype.gradle.plugins.scan' version '3.1.1' // scan for vulnerabilities
 }
 
 group = 'com.imsweb'
@@ -22,42 +20,39 @@ repositories {
 }
 
 dependencies {
-    api 'com.imsweb:validation:4.0'
-    api 'com.imsweb:naaccr-xml:11.2'
-    api 'com.imsweb:seerutils:5.6'
+    api 'com.imsweb:validation:4.3'
+    api 'com.imsweb:naaccr-xml:11.3'
+    api 'com.imsweb:seerutils:5.7'
     api 'com.imsweb:staging-algorithm-cs:02.05.50.10'
 
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     implementation 'net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a'
-    implementation 'org.xerial:sqlite-jdbc:3.47.0.0'
-    implementation 'org.apache.logging.log4j:log4j-api:2.24.1'
+    implementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.24.3'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'com.imsweb:data-generator:2.0'
-    testImplementation 'org.apache.logging.log4j:log4j-core:2.24.1'
+    testImplementation 'com.imsweb:data-generator:2.1'
+    testImplementation 'org.apache.logging.log4j:log4j-core:2.24.3'
 }
 
 // enforce UTF-8, display the compilation warnings
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
 }
 
-// the Javadoc was made way too strict in Java 8 and it's not worth the time fixing everything!
 tasks.withType(Javadoc).configureEach {
     options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
+    options.addBooleanOption('html5', true)
 }
 
-// generate javadoc and sources (required by Nexus)
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-
-    withJavadocJar()
-    withSourcesJar()
-}
-
-// customize the manifest
 jar {
     manifest {
         attributes('Implementation-Title': project.name,
@@ -85,59 +80,31 @@ spotbugs {
 }
 
 // use this task to generate the edits parser for Genedits syntax
-tasks.register('generateEditsParser') {
-    doLast {
-        // create lexer
-        javaexec {
-            main = '-jar'
-            args = ['config/jflex-1.4.2/lib/JFlex.jar',
-                    '--nobak',
-                    '-d',
-                    'src/test/java/com/imsweb/seeredits/genedits/language',
-                    'src/test/resources/syntax/genedits.flex']
-        }
+tasks.register('generateEditsLexer', JavaExec) {
+    group = 'parser'
+    classpath = files('config/jflex-1.4.2/lib/JFlex.jar')
+    args = ['--nobak', '-d', 'src/test/java/com/imsweb/seeredits/genedits/language', 'src/test/resources/syntax/genedits.flex']
+}
 
-        // create parser
-        javaexec {
-            main = '-jar'
-            args = ['config/jflex-1.4.2/lib/java-cup-11a.jar',
-                    '-symbols',
-                    'GeneditsTokenType',
-                    '-parser',
-                    'GeneditsParser',
-                    '-destdir',
-                    'src/test/java/com/imsweb/seeredits/genedits/language',
-                    'src/test/resources/syntax/genedits.cup']
-        }
-    }
+// use this task to generate the edits parser for Genedits syntax
+tasks.register('generateEditsParser', JavaExec) {
+    group = 'parser'
+    classpath = files('config/jflex-1.4.2/lib/java-cup-11a.jar')
+    args = ['-symbols', 'GeneditsTokenType', '-parser', 'GeneditsParser', '-destdir', 'src/test/java/com/imsweb/seeredits/genedits/language', 'src/test/resources/syntax/genedits.cup']
+}
+
+// use this task to generate the regex lexer
+tasks.register('generateRegexLexer', JavaExec) {
+    group = 'parser'
+    classpath = files('config/jflex-1.4.2/lib/JFlex.jar')
+    args = ['--nobak', '-d', 'src/test/java/com/imsweb/seeredits/genedits/language/regex', 'src/test/resources/syntax/regex.flex']
 }
 
 // use this task to generate the regex parser
-tasks.register('generateRegexParser') {
-    doLast {
-        // create lexer
-        javaexec {
-            main = '-jar'
-            args = ['config/jflex-1.4.2/lib/JFlex.jar',
-                    '--nobak',
-                    '-d',
-                    'src/test/java/com/imsweb/seeredits/genedits/language/regex',
-                    'src/test/resources/syntax/regex.flex']
-        }
-
-        // create parser
-        javaexec {
-            main = '-jar'
-            args = ['config/jflex-1.4.2/lib/java-cup-11a.jar',
-                    '-symbols',
-                    'GeneditsRegexToken',
-                    '-parser',
-                    'GeneditsRegexParser',
-                    '-destdir',
-                    'src/test/java/com/imsweb/seeredits/genedits/language/regex',
-                    'src/test/resources/syntax/regex.cup']
-        }
-    }
+tasks.register('generateRegexParser', JavaExec) {
+    group = 'parser'
+    classpath = files('config/jflex-1.4.2/lib/java-cup-11a.jar')
+    args = ['-symbols', 'GeneditsRegexToken', '-parser', 'GeneditsRegexParser', '-destdir', 'src/test/java/com/imsweb/seeredits/genedits/language/regex', 'src/test/resources/syntax/regex.cup']
 }
 
 // Nexus vulnerability scan (https://github.com/sonatype-nexus-community/scan-gradle-plugin)
@@ -166,86 +133,46 @@ tasks.named("dependencyUpdates").configure {
     }
 }
 
-// needed to deploy to Maven Central
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId = 'validation-translation'
-            from components.java
-            versionMapping {
-                usage('java-api') {
-                    fromResolutionOf('runtimeClasspath')
-                }
-                usage('java-runtime') {
-                    fromResolutionResult()
-                }
-            }
-            pom {
-                name = 'Validation Translation'
-                description = 'This project allows a Genedits Metafile to be translated into Groovy edits that can be executed in the SEER Validation framework.'
-                url = 'https://github.com/imsweb/validation-translation'
-                inceptionYear = '2021'
+// needed to deploy to Maven Central Portal
+mavenPublishing {
+    configure(new JavaLibrary(new JavadocJar.Javadoc(), true))
 
-                licenses {
-                    license {
-                        name = 'A modified BSD License (BSD)'
-                        url = 'https://github.com/imsweb/validation/blob/master/LICENSE'
-                        distribution = 'repo'
-                    }
-                }
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL, true)
+    signAllPublications()
 
-                developers {
-                    developer {
-                        id = 'depryf'
-                        name = 'Fabian Depry'
-                        email = 'depryf@imsweb.com'
-                    }
-                }
+    pom {
+        name = 'Validation Translation'
+        description = 'This project allows a Genedits Metafile to be translated into Groovy edits that can be executed in the SEER Validation framework.'
+        url = 'https://github.com/imsweb/validation-translation'
+        inceptionYear = '2021'
 
-                scm {
-                    url = 'https://github.com/imsweb/validation-translation'
-                    connection = 'scm:https://github.com/imsweb/validation-translation.git'
-                    developerConnection = 'scm:git@github.com:imsweb/validation-translation.git'
-                }
+        licenses {
+            license {
+                name = 'A modified BSD License (BSD)'
+                url = 'https://github.com/imsweb/validation/blob/master/LICENSE'
+                distribution = 'repo'
             }
         }
-    }
-}
 
-// setup JAR signing
-signing {
-    required { !project.version.endsWith('-SNAPSHOT') }
-    
-    String signingKey = project.findProperty('signingKey') ?: ''
-    String signingPassword = project.findProperty('signingPassword') ?: ''
-
-    useInMemoryPgpKeys(signingKey, signingPassword)
-
-    sign publishing.publications.mavenJava
-}
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            stagingProfileId = '63e5ddd3ab0d16'
-
-            username = project.findProperty("nexusUsername")
-            password = project.findProperty("nexusPassword")
+        developers {
+            developer {
+                id = 'depryf'
+                name = 'Fabian Depry'
+                email = 'depryf@imsweb.com'
+            }
         }
-    }
 
-    clientTimeout = Duration.ofSeconds(300)
-    connectTimeout = Duration.ofSeconds(60)
-
-    transitionCheckOptions {
-        maxRetries.set(50)
-        delayBetween.set(Duration.ofMillis(5000))
+        scm {
+            url = 'https://github.com/imsweb/validation-translation'
+            connection = 'scm:https://github.com/imsweb/validation-translation.git'
+            developerConnection = 'scm:git@github.com:imsweb/validation-translation.git'
+        }
     }
 }
 
 // Gradle wrapper, this allows to build the project without having to install Gradle!
 wrapper {
-    gradleVersion = '8.11'
+    gradleVersion = '8.14'
     distributionType = Wrapper.DistributionType.ALL
 }
 
