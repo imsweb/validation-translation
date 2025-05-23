@@ -1,6 +1,6 @@
 # Java Metafile Translation
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.imsweb/validation-translation/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.imsweb/validation-translation)
+[![Maven Central](https://img.shields.io/maven-central/v/com.imsweb/validation-translation.svg)](https://central.sonatype.com/artifact/com.imsweb/validation-translation)
 
 This project allows a Genedits Metafile to be translated into Groovy edits that can be executed in the SEER Validation framework.
 
