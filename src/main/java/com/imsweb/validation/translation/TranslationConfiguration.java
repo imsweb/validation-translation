@@ -11,7 +11,7 @@ import com.imsweb.naaccrxml.entity.dictionary.NaaccrDictionary;
 public class TranslationConfiguration {
 
     // ID generation is used for edit and set IDs
-    enum IdGeneration {
+    public enum IdGeneration {
 
         // the edit/set IDs will be set to the next available number within the validator with the validator ID as a prefix;
         // with this option, previous IDs will be retained for edits with the same tag if that information is provided to the translation
