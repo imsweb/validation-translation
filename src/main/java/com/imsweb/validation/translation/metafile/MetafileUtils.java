@@ -304,7 +304,7 @@ public final class MetafileUtils {
             return LocalDate.parse(value, DateTimeFormatter.ofPattern("yyyyMMdd")).atStartOfDay();
 
         if (value.matches("\\d{8} \\d{2}:\\d{2}\\d{2}"))
-            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyyMMdd hh:mm:ss"));
+            return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss"));
 
         return null;
     }
