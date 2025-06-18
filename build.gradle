@@ -5,7 +5,7 @@ plugins {
     id 'checkstyle'
     id 'com.vanniktech.maven.publish' version '0.32.0' // publish to Maven Central
     id 'com.github.ben-manes.versions' version '0.52.0' // check for out-of-date dependencies (run 'dependencyUpdates' manually)
-    id 'com.github.spotbugs' version '6.1.11' // spotbugs code analysis
+    id 'com.github.spotbugs' version '6.2.0' // spotbugs code analysis
     id 'org.sonatype.gradle.plugins.scan' version '3.1.1' // scan for vulnerabilities
 }
 
@@ -27,12 +27,12 @@ dependencies {
 
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     implementation 'net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a'
-    implementation 'org.xerial:sqlite-jdbc:3.49.1.0'
-    implementation 'org.apache.logging.log4j:log4j-api:2.24.3'
+    implementation 'org.xerial:sqlite-jdbc:3.50.1.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.25.0'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'com.imsweb:data-generator:2.1'
-    testImplementation 'org.apache.logging.log4j:log4j-core:2.24.3'
+    testImplementation 'com.imsweb:data-generator:2.2'
+    testImplementation 'org.apache.logging.log4j:log4j-core:2.25.0'
 }
 
 // enforce UTF-8, display the compilation warnings

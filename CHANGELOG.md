@@ -4,6 +4,7 @@
 
 - Added new 'createFailureFiles' to the configuration (defaults to false).
 - Fixed some minor logging issues.
+- Updated dependencies.
 
 **Version 2.1**
 
