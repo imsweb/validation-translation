@@ -69,6 +69,9 @@ public class TranslationConfiguration {
     // if provided, the dictionaries will be available to the field resolver (and the default field resolver will use them).
     private List<NaaccrDictionary> _userDefinedDictionaries;
 
+    // whether edits that can't be translated should create a file with the original source code (mainly used to easily investigate translation issues)
+    private boolean _createFailureFiles;
+
     // the number of threads to use for compiling the edits (defaults to 2)
     private int _numCompilationThreads;
 
@@ -121,9 +124,10 @@ public class TranslationConfiguration {
         _logicResolver = new LogicResolver();
         _runtimeGenerator = new RuntimeGenerator();
 
-        _numCompilationThreads = 2;
+        _createFailureFiles = false;
 
         _generateGroovySourceCode = false;
+        _numCompilationThreads = 2;
         _groovySourceCodeNumFiles = 1;
 
         _dryRunMode = false;
@@ -271,6 +275,14 @@ public class TranslationConfiguration {
 
     public void setUserDefinedDictionaries(List<NaaccrDictionary> userDefinedDictionaries) {
         _userDefinedDictionaries = userDefinedDictionaries;
+    }
+
+    public boolean createFailureFiles() {
+        return _createFailureFiles;
+    }
+
+    public void setCreateFailureFiles(boolean createFailureFiles) {
+        _createFailureFiles = createFailureFiles;
     }
 
     public boolean isGenerateGroovySourceCode() {

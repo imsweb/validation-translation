@@ -80,7 +80,7 @@ public class MetafileTranslationDemo {
         Metafile mf = MetafileUtils.extractMetafileInformation(new File(pathToMetafile));
         _LOG.info("Loaded metafile with " + mf.getEdits().size() + " edits");
 
-        Validator v = new MetafileTranslator().translateMetafile(mf, conf);
+        Validator v = new MetafileTranslator().translateMetafile(mf, conf).getValidator();
         _LOG.info("Created new validator '" + v.getId() + "' with " + v.getRules().size() + " edits");
     }
 }

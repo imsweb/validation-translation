@@ -154,7 +154,7 @@ public class MetafileTranslator {
 
         // create the validator
         _LOG.info("\r\nTranslating...");
-        TranslationResult result = createValidator(mf, conf, previousInfo);
+        TranslationResult result = createValidator(mf, conf, previousInfo, true);
 
         // output a few more messages
         Validator v = result.getValidator();
@@ -290,7 +290,7 @@ public class MetafileTranslator {
         Map<String, TranslationMapping> prevSetMappings = new TreeMap<>(previousInfo.getAllPreviousSetsMapping());
         for (TranslationMapping dto : result.getNamesMapping().values())
             prevSetMappings.remove(dto.getTag());
-        if (prevSetMappings.size() > 0) {
+        if (!prevSetMappings.isEmpty()) {
             _LOG.info("  > following " + prevSetMappings.size() + " sets got removed:");
             msg = new StringBuilder();
             for (Entry<String, TranslationMapping> entry : prevSetMappings.entrySet())
@@ -448,13 +448,13 @@ public class MetafileTranslator {
         return newVersion;
     }
 
-    public Validator translateMetafile(Metafile metafile, TranslationConfiguration conf) throws TranslationException {
+    public TranslationResult translateMetafile(Metafile metafile, TranslationConfiguration conf) throws TranslationException {
         validateConfiguration(conf, false);
 
-        return createValidator(metafile, conf, new PreviousTranslationInfo(conf)).getValidator();
+        return createValidator(metafile, conf, new PreviousTranslationInfo(conf), false);
     }
 
-    protected TranslationResult createValidator(Metafile mf, TranslationConfiguration conf, PreviousTranslationInfo previousInfo) throws TranslationException {
+    protected TranslationResult createValidator(Metafile mf, TranslationConfiguration conf, PreviousTranslationInfo previousInfo, boolean loggingAllowed) throws TranslationException {
         List<String> errors = new ArrayList<>();
 
         String mfPrefix = conf.getTranslationPrefix();
@@ -510,7 +510,7 @@ public class MetafileTranslator {
             String name = edit.getName();
 
             // translate the edit logic
-            EditTranslationResult result = translateEdit(edit, tables, conf, true);
+            EditTranslationResult result = translateEdit(edit, tables, conf, loggingAllowed);
             if (result.getTranslationErrorMessage() != null)
                 errors.add(" > unable to translate \"" + edit.getName() + "\" (the logic was copied into a failure file): " + result.getTranslationErrorMessage());
 
@@ -644,7 +644,8 @@ public class MetafileTranslator {
         // sanity check on rule messages
         for (Rule r : v.getRules()) {
             if (r.getMessage().contains("%F1") || r.getMessage().contains("%F2") || r.getMessage().equals("This edit has no default error message")) {
-                _LOG.error("!!! Message was not properly fixed for " + r.getId() + ": " + r.getMessage());
+                if (loggingAllowed)
+                    _LOG.error("!!! Message was not properly fixed for " + r.getId() + ": " + r.getMessage());
                 errors.add(" > message was not properly fixed (field names were not replaced) for \"" + r.getName() + "\"" + ": " + r.getMessage());
             }
         }
@@ -776,10 +777,10 @@ public class MetafileTranslator {
         for (MetafileField field : metafile.getFields())
             field.setPropertyName(conf.getFieldResolver().resolveField(field, conf));
 
-        return translateEdit(edit, metafile.getTables().stream().collect(Collectors.toMap(MetafileTable::getName, Function.identity())), conf, false);
+        return translateEdit(edit, metafile.getTables().stream().collect(Collectors.toMap(MetafileTable::getName, Function.identity())), conf,  false);
     }
 
-    protected EditTranslationResult translateEdit(MetafileEdit edit, Map<String, MetafileTable> tables, TranslationConfiguration conf, boolean createFailureFiles) {
+    protected EditTranslationResult translateEdit(MetafileEdit edit, Map<String, MetafileTable> tables, TranslationConfiguration conf, boolean loggingAllowed) {
         EditTranslationResult output = new EditTranslationResult();
 
         // reset some states (this is not a good design, but changing it would be a major undertaking)
@@ -802,11 +803,12 @@ public class MetafileTranslator {
             output.setUsedTablesAndIndexes(context.getUsedTablesAndIndexes());
         }
         catch (Exception e) {
-            _LOG.error("  > !!! Unable to parse '" + edit.getName() + "': " + e.getMessage());
+            if (loggingAllowed)
+                _LOG.error("  > !!! Unable to parse '" + edit.getName() + "': " + e.getMessage());
             output.setTranslationErrorMessage(e.getMessage());
             output.setGroovy("// This edit could not be translated because it contains invalid syntax.\n\nreturn true");
             output.setUsedTablesAndIndexes(new HashMap<>());
-            if (createFailureFiles) {
+            if (conf.createFailureFiles()) {
                 try {
                     SeerUtils.writeFile("/** " + edit.getName() + " */\n\n" + edit.getLogic(), new File(conf.getWorkingDirectoryPath(), "failed-translation_" + edit.getTag() + ".txt"));
                 }

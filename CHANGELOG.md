@@ -1,5 +1,10 @@
 ## Validation Translation Version History
 
+**Version 2.2**
+
+- Added new 'createFailureFiles' to the configuration (defaults to false).
+- Fixed some minor logging issues.
+
 **Version 2.1**
 
 - Updated dependencies.
