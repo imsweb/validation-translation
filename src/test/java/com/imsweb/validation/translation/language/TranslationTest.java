@@ -86,6 +86,7 @@ public class TranslationTest {
         return Paths.get(System.getProperty("user.dir") + "/src/test/resources/tests");
     }
 
+    @SuppressWarnings("resource")
     private void assertTranslations(String filenamePrefix) {
         try {
             for (String filename : Files.list(getTestsDir()).map(Path::getFileName).map(Path::toString).filter(f -> f.startsWith(filenamePrefix) && !f.contains("expected")).collect(
@@ -165,7 +166,7 @@ public class TranslationTest {
             throw new RuntimeException("Unable to parse '" + filename + "': bad syntax...");
 
         try {
-            return ((ParsedTree)parsingResult.value).translate(new EditTranslationContext(edit, "TEST", null));
+            return ((ParsedTree)parsingResult.value).translate(new EditTranslationContext(edit, null, "TEST", null));
         }
         catch (Exception e) {
             throw new RuntimeException("Unable to parse '" + filename + "'", e);

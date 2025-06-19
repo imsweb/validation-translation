@@ -75,6 +75,10 @@ import static com.imsweb.validation.ValidationEngine.CONTEXT_TYPE_JAVA;
 import static com.imsweb.validation.ValidationEngine.CONTEXT_TYPE_TABLE;
 import static com.imsweb.validation.ValidationEngine.CONTEXT_TYPE_TABLE_INDEX_DEF;
 
+// TODO FD - validator parent is not set on all the rules; maybe other parents are missing...
+// TODO FD - when an edit can't be translated, it says a failure file was created, but that's not always true...
+// TODO FD - add a "translateMetafile(File, conf)
+
 /**
  * Use this file to translate Genedits metafiles (SMF).
  * <br/><br/>
@@ -510,7 +514,7 @@ public class MetafileTranslator {
             String name = edit.getName();
 
             // translate the edit logic
-            EditTranslationResult result = translateEdit(edit, tables, conf, loggingAllowed);
+            EditTranslationResult result = translateEdit(edit, mf, tables, conf, loggingAllowed);
             if (result.getTranslationErrorMessage() != null)
                 errors.add(" > unable to translate \"" + edit.getName() + "\" (the logic was copied into a failure file): " + result.getTranslationErrorMessage());
 
@@ -777,10 +781,10 @@ public class MetafileTranslator {
         for (MetafileField field : metafile.getFields())
             field.setPropertyName(conf.getFieldResolver().resolveField(field, conf));
 
-        return translateEdit(edit, metafile.getTables().stream().collect(Collectors.toMap(MetafileTable::getName, Function.identity())), conf,  false);
+        return translateEdit(edit, metafile, metafile.getTables().stream().collect(Collectors.toMap(MetafileTable::getName, Function.identity())), conf,  false);
     }
 
-    protected EditTranslationResult translateEdit(MetafileEdit edit, Map<String, MetafileTable> tables, TranslationConfiguration conf, boolean loggingAllowed) {
+    protected EditTranslationResult translateEdit(MetafileEdit edit, Metafile metafile, Map<String, MetafileTable> tables, TranslationConfiguration conf, boolean loggingAllowed) {
         EditTranslationResult output = new EditTranslationResult();
 
         // reset some states (this is not a good design, but changing it would be a major undertaking)
@@ -797,7 +801,7 @@ public class MetafileTranslator {
             ParsedTree tree = (ParsedTree)parser.parse().value;
 
             // translate the parsed logic
-            EditTranslationContext context = new EditTranslationContext(edit, conf.getTranslationPrefix(), tables);
+            EditTranslationContext context = new EditTranslationContext(edit, metafile, conf.getTranslationPrefix(), tables);
             String translatedLogic = tree.translate(context);
             output.setGroovy(translatedLogic);
             output.setUsedTablesAndIndexes(context.getUsedTablesAndIndexes());

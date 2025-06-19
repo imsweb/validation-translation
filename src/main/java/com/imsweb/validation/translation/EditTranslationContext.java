@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.imsweb.validation.translation.language.entity.Statements;
+import com.imsweb.validation.translation.metafile.Metafile;
 import com.imsweb.validation.translation.metafile.MetafileEdit;
 import com.imsweb.validation.translation.metafile.MetafileTable;
 
@@ -16,6 +17,9 @@ public class EditTranslationContext {
 
     // the edit being translated
     private final MetafileEdit _edit;
+
+    // the parent metafile
+    private final Metafile _metafile;
 
     // the validator prefix (used to know what metafile we are translating)
     private final String _validatorPrefix;
@@ -47,8 +51,9 @@ public class EditTranslationContext {
     /**
      * Constructor.
      */
-    public EditTranslationContext(MetafileEdit mfEdit, String mfPrefix, Map<String, MetafileTable> tables) {
+    public EditTranslationContext(MetafileEdit mfEdit, Metafile metafile, String mfPrefix, Map<String, MetafileTable> tables) {
         _edit = mfEdit;
+        _metafile = metafile;
         _validatorPrefix = mfPrefix;
         _tables = tables;
         _usedTablesAndIndexes = new HashMap<>();
@@ -62,6 +67,10 @@ public class EditTranslationContext {
 
     public MetafileEdit getEdit() {
         return _edit;
+    }
+
+    public Metafile getMetafile() {
+        return _metafile;
     }
 
     public Map<String, MetafileTable> getTables() {

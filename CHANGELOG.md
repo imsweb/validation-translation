@@ -1,5 +1,9 @@
 ## Validation Translation Version History
 
+**Version 2.3**
+
+- Improved translation to deal with metafiles that don't properly link their edits to all the messages they use.
+
 **Version 2.2**
 
 - Added new 'createFailureFiles' to the configuration (defaults to false).

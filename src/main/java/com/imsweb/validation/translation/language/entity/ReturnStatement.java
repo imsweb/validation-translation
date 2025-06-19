@@ -45,6 +45,9 @@ public class ReturnStatement extends Statement {
                 for (MetafileMessage m : tContext.getEdit().getMessages())
                     if (m.getNumber() != null && m.getNumber().toString().equals(literal))
                         msg = m;
+                // I found a bug in some metafile where some edits were not properly linked to their used messages, this addresses that weird case...
+                if (msg == null && tContext.getMetafile() != null && tContext.getMetafile().getMessages() != null)
+                    msg = tContext.getMetafile().getMessages().stream().filter(m -> m.getNumber().toString().equals(literal)).findFirst().orElse(null);
                 if (msg != null)
                     buf.append("Functions.GEN_ERROR_TEXT(binding, '").append(msg.getMessage().replace("'", "\\'")).append("')");
                 else

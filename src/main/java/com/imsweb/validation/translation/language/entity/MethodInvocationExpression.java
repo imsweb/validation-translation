@@ -245,6 +245,9 @@ public class MethodInvocationExpression extends Expression {
                             for (MetafileMessage m : tContext.getEdit().getMessages())
                                 if (m.getNumber() != null && m.getNumber().toString().equals(expStr))
                                     msg = m;
+                            // I found a bug in some metafile where some edits were not properly linked to their used messages, this addresses that weird case...
+                            if (msg == null && tContext.getMetafile() != null && tContext.getMetafile().getMessages() != null)
+                                msg = tContext.getMetafile().getMessages().stream().filter(m -> m.getNumber().toString().equals(expStr)).findFirst().orElse(null);
                             if (msg == null)
                                 throw new RuntimeException("Unable to find message #" + expStr + " on " + tContext.getEdit().getName());
 
