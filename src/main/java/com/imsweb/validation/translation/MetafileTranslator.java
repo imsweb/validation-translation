@@ -75,10 +75,6 @@ import static com.imsweb.validation.ValidationEngine.CONTEXT_TYPE_JAVA;
 import static com.imsweb.validation.ValidationEngine.CONTEXT_TYPE_TABLE;
 import static com.imsweb.validation.ValidationEngine.CONTEXT_TYPE_TABLE_INDEX_DEF;
 
-// TODO FD - validator parent is not set on all the rules; maybe other parents are missing...
-// TODO FD - when an edit can't be translated, it says a failure file was created, but that's not always true...
-// TODO FD - add a "translateMetafile(File, conf)
-
 /**
  * Use this file to translate Genedits metafiles (SMF).
  * <br/><br/>
@@ -109,7 +105,35 @@ public class MetafileTranslator {
     }
 
     /**
-     * Created on Aug 26, 2010 by depryf
+     * Use this method to translate a metafile into a validator. This method doesn't log anything (it does report potential errors in the result, so make sure to check those).
+     * @param file file representing the metafile to translate
+     * @param conf configuration to use
+     * @return translation result
+     * @throws TranslationException if the translation can successfully complete
+     */
+    @SuppressWarnings("unused")
+    public TranslationResult translateMetafile(File file, TranslationConfiguration conf) throws TranslationException {
+        return createValidator(conf.getMetafileResolver().resolveMetafile(conf), conf, new PreviousTranslationInfo(conf), false);
+    }
+
+    /**
+     * Use this method to translate a metafile into a validator. This method doesn't log anything (it does report potential errors in the result, so make sure to check those).
+     * @param metafile metafile to translate
+     * @param conf configuration to use
+     * @return translation result
+     * @throws TranslationException if the translation can successfully complete
+     */
+    public TranslationResult translateMetafile(Metafile metafile, TranslationConfiguration conf) throws TranslationException {
+        validateConfiguration(conf, false);
+
+        return createValidator(metafile, conf, new PreviousTranslationInfo(conf), false);
+    }
+
+    /**
+     * Use this method to execute a fulll translation of a metafile. This include logging the results, and depending on the configuration, creating the corresponding runtime (Groovy) classes.
+     * @param conf configuration to use
+     * @return translation result
+     * @throws TranslationException if the translation can successfully complete
      */
     public TranslationResult executeFullTranslation(TranslationConfiguration conf) throws IOException, TranslationException {
         validateConfiguration(conf, true);
@@ -452,12 +476,6 @@ public class MetafileTranslator {
         return newVersion;
     }
 
-    public TranslationResult translateMetafile(Metafile metafile, TranslationConfiguration conf) throws TranslationException {
-        validateConfiguration(conf, false);
-
-        return createValidator(metafile, conf, new PreviousTranslationInfo(conf), false);
-    }
-
     protected TranslationResult createValidator(Metafile mf, TranslationConfiguration conf, PreviousTranslationInfo previousInfo, boolean loggingAllowed) throws TranslationException {
         List<String> errors = new ArrayList<>();
 
@@ -516,7 +534,7 @@ public class MetafileTranslator {
             // translate the edit logic
             EditTranslationResult result = translateEdit(edit, mf, tables, conf, loggingAllowed);
             if (result.getTranslationErrorMessage() != null)
-                errors.add(" > unable to translate \"" + edit.getName() + "\" (the logic was copied into a failure file): " + result.getTranslationErrorMessage());
+                errors.add(" > unable to translate \"" + edit.getName() + "\": " + result.getTranslationErrorMessage());
 
             // build rule
             Rule r = new Rule();
@@ -560,6 +578,7 @@ public class MetafileTranslator {
             }
             r.setDescription(doc.toString());
             r.setCategory(agencies.get(edit.getAgency().getAdminCode()));
+            r.setValidator(v);
 
             v.getRules().add(r);
 
