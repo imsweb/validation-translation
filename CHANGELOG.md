@@ -1,5 +1,10 @@
 ## Validation Translation Version History
 
+**Version 2.4 (not released yet)**
+
+- Changed the minimum Java language for this library from Java 11 to Java 21.
+- Updated dependencies.
+
 **Version 2.3**
 
 - Improved translation to deal with metafiles that don't properly link their edits to all the messages they use.

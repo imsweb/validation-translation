@@ -5,6 +5,7 @@ package com.imsweb.validation.translation.language;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,8 +20,6 @@ import org.junit.Test;
 import java_cup.runtime.Symbol;
 
 import com.imsweb.staging.Staging;
-import com.imsweb.staging.cs.CsDataProvider;
-import com.imsweb.staging.cs.CsDataProvider.CsVersion;
 import com.imsweb.validation.ConstructionException;
 import com.imsweb.validation.ValidationContextFunctions;
 import com.imsweb.validation.ValidationEngine;
@@ -43,8 +42,17 @@ public class TranslationTest {
     @BeforeClass
     public static void setup() {
         ValidationServices.initialize(new ValidationServices());
-        ValidationContextFunctions.initialize(new MetafileContextFunctions(Staging.getInstance(CsDataProvider.getInstance(CsVersion.LATEST)), null, null));
+        ValidationContextFunctions.initialize(new MetafileContextFunctions(loadCsStagingInstance(), null, null));
         ValidationEngine.getInstance().initialize();
+    }
+
+    private static Staging loadCsStagingInstance() {
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("cs-02.05.50.zip")) {
+            return Staging.getInstance(is);
+        }
+        catch (IOException e) {
+            throw new IllegalStateException("Unable to initialize staging from cs-02.05.50.zip", e);
+        }
     }
 
     @Test
@@ -89,8 +97,7 @@ public class TranslationTest {
     @SuppressWarnings("resource")
     private void assertTranslations(String filenamePrefix) {
         try {
-            for (String filename : Files.list(getTestsDir()).map(Path::getFileName).map(Path::toString).filter(f -> f.startsWith(filenamePrefix) && !f.contains("expected")).collect(
-                    Collectors.toList()))
+            for (String filename : Files.list(getTestsDir()).map(Path::getFileName).map(Path::toString).filter(f -> f.startsWith(filenamePrefix) && !f.contains("expected")).toList())
                 assertTranslation(filename);
         }
         catch (IOException e) {

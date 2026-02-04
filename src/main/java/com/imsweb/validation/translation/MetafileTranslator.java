@@ -6,6 +6,7 @@ package com.imsweb.validation.translation;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
@@ -42,7 +43,6 @@ import com.imsweb.naaccrxml.NaaccrXmlDictionaryUtils;
 import com.imsweb.naaccrxml.entity.dictionary.NaaccrDictionary;
 import com.imsweb.seerutils.SeerUtils;
 import com.imsweb.staging.Staging;
-import com.imsweb.staging.cs.CsDataProvider;
 import com.imsweb.staging.cs.CsDataProvider.CsVersion;
 import com.imsweb.validation.ConstructionException;
 import com.imsweb.validation.InitializationOptions;
@@ -161,7 +161,7 @@ public class MetafileTranslator {
         // initialize a bunch of stuff
         _LOG.info("\r\nInitializing inputs...");
         ValidationServices.initialize(new ValidationServices());
-        ValidationContextFunctions.initialize(new MetafileContextFunctions(Staging.getInstance(CsDataProvider.getInstance(CsVersion.LATEST)), null, null));
+        ValidationContextFunctions.initialize(new MetafileContextFunctions(loadCsStagingInstance(), null, null));
         _LOG.info("  > initialized Collaborative Stage " + CsVersion.LATEST.getVersion());
         InitializationOptions options = new InitializationOptions();
         options.setNumCompilationThreads(conf.getNumCompilationThreads());
@@ -384,6 +384,15 @@ public class MetafileTranslator {
         return result;
     }
 
+    private static Staging loadCsStagingInstance() {
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("cs-02.05.50.zip")) {
+            return Staging.getInstance(is);
+        }
+        catch (IOException e) {
+            throw new IllegalStateException("Unable to initialize staging from cs-02.05.50.zip", e);
+        }
+    }
+
     protected void validateConfiguration(TranslationConfiguration conf, boolean validateFilesAndDirs) throws TranslationException {
         if (conf == null)
             throw new TranslationException("Configuration is required");
@@ -572,7 +581,7 @@ public class MetafileTranslator {
             if (edit.getDescription() != null)
                 doc.append(edit.getDescription());
             if (!StringUtils.isBlank(edit.getAdminNotes())) {
-                if (doc.length() > 0)
+                if (!doc.isEmpty())
                     doc.append("\n\n");
                 doc.append("Admin Notes\n***********\n").append(edit.getAdminNotes());
             }
@@ -800,7 +809,7 @@ public class MetafileTranslator {
         for (MetafileField field : metafile.getFields())
             field.setPropertyName(conf.getFieldResolver().resolveField(field, conf));
 
-        return translateEdit(edit, metafile, metafile.getTables().stream().collect(Collectors.toMap(MetafileTable::getName, Function.identity())), conf,  false);
+        return translateEdit(edit, metafile, metafile.getTables().stream().collect(Collectors.toMap(MetafileTable::getName, Function.identity())), conf, false);
     }
 
     protected EditTranslationResult translateEdit(MetafileEdit edit, Metafile metafile, Map<String, MetafileTable> tables, TranslationConfiguration conf, boolean loggingAllowed) {
