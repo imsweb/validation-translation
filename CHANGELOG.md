@@ -1,8 +1,9 @@
 ## Validation Translation Version History
 
-**Version 2.4 (not released yet)**
+**Version 3.0**
 
 - Changed the minimum Java language for this library from Java 11 to Java 21.
+- Removed old CS staging JAR dependency that was replaced by a ZIP data file.
 - Updated dependencies.
 
 **Version 2.3**
