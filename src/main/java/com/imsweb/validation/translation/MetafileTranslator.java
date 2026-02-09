@@ -43,7 +43,6 @@ import com.imsweb.naaccrxml.NaaccrXmlDictionaryUtils;
 import com.imsweb.naaccrxml.entity.dictionary.NaaccrDictionary;
 import com.imsweb.seerutils.SeerUtils;
 import com.imsweb.staging.Staging;
-import com.imsweb.staging.cs.CsDataProvider.CsVersion;
 import com.imsweb.validation.ConstructionException;
 import com.imsweb.validation.InitializationOptions;
 import com.imsweb.validation.ValidationContextFunctions;
@@ -161,8 +160,9 @@ public class MetafileTranslator {
         // initialize a bunch of stuff
         _LOG.info("\r\nInitializing inputs...");
         ValidationServices.initialize(new ValidationServices());
-        ValidationContextFunctions.initialize(new MetafileContextFunctions(loadCsStagingInstance(), null, null));
-        _LOG.info("  > initialized Collaborative Stage " + CsVersion.LATEST.getVersion());
+        Staging csStaging = loadCsStagingInstance();
+        ValidationContextFunctions.initialize(new MetafileContextFunctions(csStaging, null, null));
+        _LOG.info("  > initialized Collaborative Stage " + csStaging.getVersion());
         InitializationOptions options = new InitializationOptions();
         options.setNumCompilationThreads(conf.getNumCompilationThreads());
         ValidationEngine.getInstance().initialize(options);

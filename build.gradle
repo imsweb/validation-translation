@@ -21,7 +21,6 @@ dependencies {
     api 'com.imsweb:validation:4.8'
     api 'com.imsweb:naaccr-xml:12.1'
     api 'com.imsweb:seerutils:5.7'
-    api 'com.imsweb:staging-algorithm-cs:02.05.50.10'
 
     implementation 'org.apache.commons:commons-lang3:3.20.0'
     implementation 'net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a'
@@ -31,6 +30,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.imsweb:data-generator:2.3'
     testImplementation 'org.apache.logging.log4j:log4j-core:2.25.3'
+    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.25.3'
 }
 
 // enforce UTF-8, display the compilation warnings
