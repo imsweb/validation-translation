@@ -30,7 +30,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.imsweb:data-generator:2.3'
     testImplementation 'org.apache.logging.log4j:log4j-core:2.25.3'
-    implementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.25.3'
+    testImplementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.25.3'
 }
 
 // enforce UTF-8, display the compilation warnings
