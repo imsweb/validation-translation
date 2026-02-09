@@ -47,7 +47,7 @@ public class TranslationTest {
     }
 
     private static Staging loadCsStagingInstance() {
-        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("cs-02.05.50.zip")) {
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("staging/cs-02.05.50.zip")) {
             return Staging.getInstance(is);
         }
         catch (IOException e) {

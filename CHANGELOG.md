@@ -1,5 +1,9 @@
 ## Validation Translation Version History
 
+**Version 3.1**
+
+- Fixed CS staging initialization not working properly.
+
 **Version 3.0**
 
 - Changed the minimum Java language for this library from Java 11 to Java 21.

@@ -31,6 +31,8 @@ public class MetafileTranslatorTest {
 
         MetafileTranslator translator = new MetafileTranslator();
 
+        Assert.assertNotNull(translator.loadCsStagingInstance());
+
         // "normal" translation
         Assert.assertEquals("[['H1','H2'],['V1','V2']]", translator.generateTableExpression(table, tableUsage));
 
