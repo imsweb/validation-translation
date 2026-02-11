@@ -49,6 +49,15 @@ conf.setNaaccrVersion("220");
 new MetafileTranslator().executeFullTranslation(conf);
 ```
 
+## Collaborative Stage dependency
+
+The translation requires the CS data to be found on the class path.
+
+By default, it will try to load the data from "staging/cs-02.05.50.zip" but that location can be changed in the 
+translation configuration.
+
+The ZIP file can be downloaded from [this GitHub project](https://github.com/imsweb/staging-client-java/releases).
+
 ## About SEER
 
 This library was developed through the [SEER](http://seer.cancer.gov/) program.

@@ -160,7 +160,7 @@ public class MetafileTranslator {
         // initialize a bunch of stuff
         _LOG.info("\r\nInitializing inputs...");
         ValidationServices.initialize(new ValidationServices());
-        Staging csStaging = loadCsStagingInstance();
+        Staging csStaging = loadCsStagingInstance(conf);
         ValidationContextFunctions.initialize(new MetafileContextFunctions(csStaging, null, null));
         _LOG.info("  > initialized Collaborative Stage " + csStaging.getVersion());
         InitializationOptions options = new InitializationOptions();
@@ -384,12 +384,12 @@ public class MetafileTranslator {
         return result;
     }
 
-    protected Staging loadCsStagingInstance() {
-        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("staging/cs-02.05.50.zip")) {
+    protected Staging loadCsStagingInstance(TranslationConfiguration conf) {
+        try (InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(conf.getCsStagingLocation())) {
             return Staging.getInstance(is);
         }
         catch (IOException e) {
-            throw new IllegalStateException("Unable to initialize staging from cs-02.05.50.zip", e);
+            throw new IllegalStateException("Unable to initialize CS staging data from " + conf.getCsStagingLocation() + "; make sure the data is available in the classpath!", e);
         }
     }
 

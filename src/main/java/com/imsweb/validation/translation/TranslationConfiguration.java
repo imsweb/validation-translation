@@ -105,6 +105,9 @@ public class TranslationConfiguration {
     // if true, no file will be created/modified; only the logs will be active
     private boolean _dryRunMode;
 
+    // the location (on the class path) of the CS staging data (defaults to staging/cs-02.05.50.zip)
+    private String _csStagingLocation;
+
     /**
      * Constructor.
      */
@@ -131,6 +134,8 @@ public class TranslationConfiguration {
         _groovySourceCodeNumFiles = 1;
 
         _dryRunMode = false;
+
+        _csStagingLocation = "staging/cs-02.05.50.zip";
     }
 
     public String getMetafileName() {
@@ -343,5 +348,13 @@ public class TranslationConfiguration {
 
     public void setDryRunMode(boolean dryRunMode) {
         _dryRunMode = dryRunMode;
+    }
+
+    public String getCsStagingLocation() {
+        return _csStagingLocation;
+    }
+
+    public void setCsStagingLocation(String csStagingLocation) {
+        _csStagingLocation = csStagingLocation;
     }
 }

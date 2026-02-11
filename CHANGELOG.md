@@ -1,5 +1,10 @@
 ## Validation Translation Version History
 
+**Version 3.2**
+
+- Changed CS staging initialization again; this library is not shipped with the required CS data anymore; the data must be provided on the classpath.
+- - Updated validation engine dependency.
+
 **Version 3.1**
 
 - Fixed CS staging initialization not working properly.
