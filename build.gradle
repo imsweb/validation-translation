@@ -18,17 +18,17 @@ repositories {
 }
 
 dependencies {
-    api 'com.imsweb:validation:4.9'
-    api 'com.imsweb:naaccr-xml:12.1'
+    api 'com.imsweb:validation:4.10'
+    api 'com.imsweb:naaccr-xml:12.2'
     api 'com.imsweb:seerutils:5.7'
 
     implementation 'org.apache.commons:commons-lang3:3.20.0'
     implementation 'net.sf.squirrel-sql.thirdparty-non-maven:java-cup:0.11a'
-    implementation 'org.xerial:sqlite-jdbc:3.51.1.0'
+    implementation 'org.xerial:sqlite-jdbc:3.51.2.0'
     implementation 'org.apache.logging.log4j:log4j-api:2.25.3'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'com.imsweb:data-generator:2.3'
+    testImplementation 'com.imsweb:data-generator:2.5'
     testImplementation 'org.apache.logging.log4j:log4j-core:2.25.3'
     testImplementation 'org.apache.logging.log4j:log4j-slf4j2-impl:2.25.3'
 }
@@ -150,7 +150,7 @@ mavenPublishing {
 
 // Gradle wrapper, this allows to build the project without having to install Gradle!
 wrapper {
-    gradleVersion = '9.2.1'
+    gradleVersion = '9.4.0'
     distributionType = Wrapper.DistributionType.ALL
 }
 
