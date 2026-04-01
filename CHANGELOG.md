@@ -1,6 +1,6 @@
 ## Validation Translation Version History
 
-**Version 3.3**
+**Version 3.4**
 
 - Updated dependencies.
 

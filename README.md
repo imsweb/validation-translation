@@ -4,6 +4,8 @@
 
 This project allows a Genedits Metafile to be translated into Groovy edits that can be executed in the SEER Validation framework.
 
+This library requires Java 21.
+
 ## Usage
 
 There are three ways to execute a translation:
