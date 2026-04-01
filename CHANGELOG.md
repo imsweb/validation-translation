@@ -2,6 +2,10 @@
 
 **Version 3.3**
 
+- Updated dependencies.
+
+**Version 3.3**
+
 - Updated validation engine dependency.
 
 **Version 3.2**
