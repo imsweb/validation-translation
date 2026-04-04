@@ -36,7 +36,7 @@ parser code {:
 :};
 
 /* terminals */
-terminal IF, ELSE, WHILE, RETURN, FUNCTION;
+terminal IF, FOR, ELSE, WHILE, RETURN, FUNCTION;
 terminal LPAREN, RPAREN, LBRACE, RBRACE, LBRACK, RBRACK;
 terminal EQ;
 terminal SPOUND, LPOUND;
@@ -58,8 +58,8 @@ non terminal Statement statement, empty_line_and_comment, statement_with_empty_l
 non terminal Expression expression, expression_with_comment;
 non terminal ExpressionWithParenthesis expression_with_parenthesis;
 non terminal ArgumentList argument_list_opt, argument_list;
-non terminal VariableDeclaration variable_decleration;
-non terminal java.util.List variable_decleration_list;
+non terminal VariableDeclaration variable_declaration;
+non terminal java.util.List variable_declaration_list;
 non terminal java.lang.String end_of_line_comment_opt;
 
 precedence left MINUS_OP, ELSE, ARITHMETHIC_OP, BINARY_OP, EMPTY_LINE, COMMENT;
@@ -103,9 +103,9 @@ empty_statements_opt ::=
 statement ::= 
     SEMICOLON end_of_line_comment_opt:o
     {: RESULT = new MethodInvocationStatement(o); :}
-	| TYPE:t variable_decleration_list:l SEMICOLON end_of_line_comment_opt:o
+	| TYPE:t variable_declaration_list:l SEMICOLON end_of_line_comment_opt:o
     {: RESULT = new DeclarationStatement(t, l, o); :}
-    | variable_decleration:i EQ expression:e SEMICOLON end_of_line_comment_opt:o
+    | variable_declaration:i EQ expression:e SEMICOLON end_of_line_comment_opt:o
     {: RESULT = new AssignmentStatement(i, e, o); :} 
 	| RETURN expression:e SEMICOLON end_of_line_comment_opt:o
     {: RESULT = new ReturnStatement(e, o); :}
@@ -117,6 +117,8 @@ statement ::=
     {: RESULT = new IfThenElseStatement(e, s1, null); :}
     | WHILE LPAREN expression:e RPAREN statements:ss
     {: RESULT = new WhileStatement(e, ss); :}
+    | FOR LPAREN variable_declaration:i1 EQ expression:e1 SEMICOLON expression:e2 SEMICOLON variable_declaration:i3 EQ expression:e3 RPAREN statements:ss
+    {: RESULT = new ForStatement(i1, e1, e2, i3, e3, ss); :}
     | FUNCTION IDENTIFIER:i LPAREN RPAREN statements:ss
     {: RESULT = new FunctionStatement(i, ss); :}
 	; 
@@ -184,14 +186,14 @@ expression_with_parenthesis ::=
     {: RESULT = new ExpressionWithParenthesis(e); :}
     ;
 
-variable_decleration_list ::=
-    variable_decleration:v
+variable_declaration_list ::=
+    variable_declaration:v
     {: RESULT = new java.util.ArrayList(); RESULT.add(v); :}
-    | variable_decleration:v COMMA variable_decleration_list:l
+    | variable_declaration:v COMMA variable_declaration_list:l
     {: RESULT = new java.util.ArrayList(); RESULT.add(v); RESULT.addAll(l); :}
     ;
     
-variable_decleration ::=    
+variable_declaration ::=    
     IDENTIFIER:i LBRACK NUMBER:n RBRACK
     {: RESULT = new VariableDeclaration(i, n); :}
     | IDENTIFIER:i

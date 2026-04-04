@@ -1,0 +1,31 @@
+# a for loop (from a real example)
+# @EXPECTED_RESULT@: PASS
+/** QC_Chk, RX Date BRM, RX Text--BRM (NAACCR) */
+
+int len;
+int idx;
+int compare;
+char BRM_year[5];
+char help[5];
+char scode[30];
+
+strcpy(scode, trim(substr(#S"RX Text--BRM",1,30),right));
+
+if (EMPTY(scode) or
+    EMPTY(#S"RX Date BRM"))
+  return PASS;
+
+len = 30;
+strcpy(BRM_year, substr(#S"RX Date BRM",1,4));
+
+idx=1;
+for (idx = 1; idx <= len - 3; idx= idx + 1)
+{
+strcpy(help, substr(scode,idx,4));
+compare = STRCMP(help, BRM_year);
+
+if(compare == 0)
+return PASS;
+}
+
+return WARN;

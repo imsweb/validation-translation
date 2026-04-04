@@ -96,6 +96,11 @@ public class TranslationTest {
         assertTranslations("expression-with-comments");
     }
 
+    @Test
+    public void testForLoop() {
+        assertTranslations("for-loop");
+    }
+
     private Path getTestsDir() {
         return Paths.get(System.getProperty("user.dir") + "/src/test/resources/tests");
     }
@@ -178,10 +183,22 @@ public class TranslationTest {
         MetafileField field4 = new MetafileField();
         field4.setName("Class of Case");
         field4.setNumber(10004);
-        field4.setLength(4);
+        field4.setLength(2);
         field4.setPropertyName("classOfCase");
 
-        edit.setFields(Map.of(1, field1, 2, field2, 3, field3, 4, field4));
+        MetafileField field5 = new MetafileField();
+        field5.setName("RX Text--BRM");
+        field5.setNumber(10005);
+        field5.setLength(2);
+        field5.setPropertyName("rxTextBrm");
+
+        MetafileField field6 = new MetafileField();
+        field6.setName("RX Date BRM");
+        field6.setNumber(10006);
+        field6.setLength(8);
+        field6.setPropertyName("rxDateBrm");
+
+        edit.setFields(Map.of(1, field1, 2, field2, 3, field3, 4, field4, 5, field5, 6, field6));
 
         ParsedTree.resetState();
 

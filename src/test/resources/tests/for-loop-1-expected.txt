@@ -1,0 +1,26 @@
+Functions.GEN_RESET_LOCAL_CONTEXT(binding)
+
+
+int len
+int idx
+int compare
+char[] BRM_year = new char[5]
+char[] help = new char[5]
+char[] scode = new char[30]
+
+Functions.GEN_STRCPY(scode, Functions.GEN_TRIM(Functions.GEN_SUBSTR(untrimmedline.rxTextBrm, 1, 30), ((Integer)Context.TEST_GEN_RIGHT)))
+
+if (Functions.GEN_EMPTY(scode) || Functions.GEN_EMPTY(untrimmedline.rxDateBrm))
+    return true
+len = 30
+Functions.GEN_STRCPY(BRM_year, Functions.GEN_SUBSTR(untrimmedline.rxDateBrm, 1, 4))
+
+idx = 1
+for (idx = 1; idx <= len - 3; idx = idx + 1) {
+    Functions.GEN_STRCPY(help, Functions.GEN_SUBSTR(scode, idx, 4))
+    compare = Functions.GEN_STRCMP(help, BRM_year)
+
+    if (compare == 0)
+        return true
+}
+return true

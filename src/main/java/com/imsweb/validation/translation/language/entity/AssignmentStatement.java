@@ -22,12 +22,19 @@ public class AssignmentStatement extends Statement {
 
     private static final Set<String> _BOOLEAN_VARIABLES = new HashSet<>();
 
-    @SuppressWarnings("unused")
+    private boolean _addFinalNewLine;
+
     public AssignmentStatement(VariableDeclaration variable, Expression expression, String endOfLineComment) {
+        this(variable, expression, endOfLineComment, true);
+    }
+
+    @SuppressWarnings("unused")
+    public AssignmentStatement(VariableDeclaration variable, Expression expression, String endOfLineComment, boolean addFinalNewLine) {
         _LOG.debug("ew AssignmentStatement()");
 
         _variable = variable;
         _expression = expression;
+        _addFinalNewLine = addFinalNewLine;
 
         // special case: keep track of the variables that are assigned with the result of a call to a method returning a boolean value; those variables
         // need to be defined as boolean instead of int
@@ -81,7 +88,8 @@ public class AssignmentStatement extends Statement {
         //if (_endOfLineComment != null)
         //    buf.append(" ").append(_endOfLineComment);
 
-        buf.append("\n");
+        if (_addFinalNewLine)
+            buf.append("\n");
     }
 
     @Override

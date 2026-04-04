@@ -36,6 +36,7 @@ Identifier = [:jletter:][:jletterdigit:]*
 
   /* keywords */
   "IF"                         { return new java_cup.runtime.Symbol(GeneditsTokenType.IF, yyline, yycolumn); }
+  "FOR"                        { return new java_cup.runtime.Symbol(GeneditsTokenType.FOR, yyline, yycolumn); }
   ({EmptyLine}[ ]*)?"ELSE"     { return new java_cup.runtime.Symbol(GeneditsTokenType.ELSE, yyline, yycolumn); }
   "WHILE"                      { return new java_cup.runtime.Symbol(GeneditsTokenType.WHILE, yyline, yycolumn); }
   "RETURN"                     { return new java_cup.runtime.Symbol(GeneditsTokenType.RETURN, yyline, yycolumn); }

@@ -3,6 +3,7 @@
 **Version 3.5**
 
 - Added support for embedded comments in expressions.
+- Added support for "for" loops.
 
 **Version 3.4**
 
