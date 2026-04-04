@@ -1,5 +1,9 @@
 ## Validation Translation Version History
 
+**Version 3.5**
+
+- Added support for embedded comments in expressions.
+
 **Version 3.4**
 
 - Updated dependencies.

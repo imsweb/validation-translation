@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.BeforeClass;
@@ -90,6 +91,11 @@ public class TranslationTest {
         assertTranslations("boolean-call-compared-to-int");
     }
 
+    @Test
+    public void testExpressionWithComments() {
+        assertTranslations("expression-with-comments");
+    }
+
     private Path getTestsDir() {
         return Paths.get(System.getProperty("user.dir") + "/src/test/resources/tests");
     }
@@ -156,7 +162,26 @@ public class TranslationTest {
         field1.setNumber(10001);
         field1.setLength(4);
         field1.setPropertyName("field1");
-        edit.setFields(Collections.singletonMap(1, field1));
+
+        MetafileField field2 = new MetafileField();
+        field2.setName("Primary Site");
+        field2.setNumber(10002);
+        field2.setLength(4);
+        field2.setPropertyName("primarySite");
+
+        MetafileField field3 = new MetafileField();
+        field3.setName("Histologic Type ICD-O-3");
+        field3.setNumber(10003);
+        field3.setLength(4);
+        field3.setPropertyName("histologycTypeIcdO3");
+
+        MetafileField field4 = new MetafileField();
+        field4.setName("Class of Case");
+        field4.setNumber(10004);
+        field4.setLength(4);
+        field4.setPropertyName("classOfCase");
+
+        edit.setFields(Map.of(1, field1, 2, field2, 3, field3, 4, field4));
 
         ParsedTree.resetState();
 

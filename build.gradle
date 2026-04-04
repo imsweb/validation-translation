@@ -70,32 +70,32 @@ spotbugs {
     excludeFilter.set(file('config/spotbugs/spotbugs-exclude.xml'))
 }
 
-// use this task to generate the edits parser for Genedits syntax
+// use this task to generate the lexer for Genedits syntax
 tasks.register('generateEditsLexer', JavaExec) {
     group = 'parser'
     classpath = files('config/jflex-1.4.2/lib/JFlex.jar')
-    args = ['--nobak', '-d', 'src/test/java/com/imsweb/seeredits/genedits/language', 'src/test/resources/syntax/genedits.flex']
+    args = ['--nobak', '-d', 'src/main/java/com/imsweb/validation/translation/language', 'src/test/resources/syntax/genedits.flex']
 }
 
-// use this task to generate the edits parser for Genedits syntax
+// use this task to generate the parser for Genedits syntax
 tasks.register('generateEditsParser', JavaExec) {
     group = 'parser'
     classpath = files('config/jflex-1.4.2/lib/java-cup-11a.jar')
-    args = ['-symbols', 'GeneditsTokenType', '-parser', 'GeneditsParser', '-destdir', 'src/test/java/com/imsweb/seeredits/genedits/language', 'src/test/resources/syntax/genedits.cup']
+    args = ['-symbols', 'GeneditsTokenType', '-parser', 'GeneditsParser', '-destdir', 'src/main/java/com/imsweb/validation/translation/language', 'src/test/resources/syntax/genedits.cup']
 }
 
-// use this task to generate the regex lexer
+// use this task to generate the lexer for regex in the Genedits syntax
 tasks.register('generateRegexLexer', JavaExec) {
     group = 'parser'
     classpath = files('config/jflex-1.4.2/lib/JFlex.jar')
-    args = ['--nobak', '-d', 'src/test/java/com/imsweb/seeredits/genedits/language/regex', 'src/test/resources/syntax/regex.flex']
+    args = ['--nobak', '-d', 'src/main/java/com/imsweb/validation/translation/language/regex', 'src/test/resources/syntax/regex.flex']
 }
 
-// use this task to generate the regex parser
+// use this task to generate the parser for regex in the Genedits syntax
 tasks.register('generateRegexParser', JavaExec) {
     group = 'parser'
     classpath = files('config/jflex-1.4.2/lib/java-cup-11a.jar')
-    args = ['-symbols', 'GeneditsRegexToken', '-parser', 'GeneditsRegexParser', '-destdir', 'src/test/java/com/imsweb/seeredits/genedits/language/regex', 'src/test/resources/syntax/regex.cup']
+    args = ['-symbols', 'GeneditsRegexToken', '-parser', 'GeneditsRegexParser', '-destdir', 'src/main/java/com/imsweb/validation/translation/language/regex', 'src/test/resources/syntax/regex.cup']
 }
 
 def isNonStable = { String version ->

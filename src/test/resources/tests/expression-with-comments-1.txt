@@ -1,0 +1,9 @@
+# comments embedded in the expression of an if statement (taken from a real example)
+if (/* Kidney and urothelical carcinomas */
+    (INLIST(#S"Primary Site", "649", "Cddd", 2, 3) AND INLIST(#S"Histologic Type ICD-O-3", "8120,8130")) OR
+    /* Blood and all histologies except Waldenstrom */
+    (INLIST(#S"Primary Site", "420", "Cddd", 2, 3) AND NOT INLIST(#S"Histologic Type ICD-O-3", "9761")) OR
+    /* Meninges and meningioma for class of case 00-14 */
+    (INLIST(#S"Primary Site", "709", "Cddd", 2, 3) AND INLIST(#S"Histologic Type ICD-O-3", "9530-9539") AND INLIST(#S"Class of Case", "00-14")) )
+    return FAIL;
+return PASS;

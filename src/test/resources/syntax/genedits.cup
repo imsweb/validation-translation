@@ -55,7 +55,7 @@ terminal java.lang.String  COMMENT;
 non terminal ParsedTree parsed_tree;
 non terminal Statements statements, statements_without_braces, statements_with_braces, empty_statements_opt;
 non terminal Statement statement, empty_line_and_comment, statement_with_empty_line_and_comment;
-non terminal Expression expression;
+non terminal Expression expression, expression_with_comment;
 non terminal ExpressionWithParenthesis expression_with_parenthesis;
 non terminal ArgumentList argument_list_opt, argument_list;
 non terminal VariableDeclaration variable_decleration;
@@ -144,6 +144,8 @@ statement_with_empty_line_and_comment ::=
 expression ::=
     expression_with_parenthesis:e
     {: RESULT = e; :}
+    | expression_with_comment:e
+    {: RESULT = e; :}
     | CONSTANT:c
     {: RESULT = new ConstantExpression(c); :}
     | STRING:s
@@ -171,6 +173,11 @@ expression ::=
     | CONSTANT:i LPAREN argument_list_opt:a RPAREN
     {: RESULT = new MethodInvocationExpression(i, a); :}
 	;
+
+expression_with_comment ::=
+    COMMENT:c expression:e
+    {: RESULT = e; :}
+    ;
 
 expression_with_parenthesis ::=
     LPAREN expression:e RPAREN

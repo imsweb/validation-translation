@@ -1,0 +1,5 @@
+Functions.GEN_RESET_LOCAL_CONTEXT(binding)
+
+if ((Functions.GEN_INLIST(untrimmedline.primarySite, "649", "(C\\d\\d\\d)", 2, 3) && Functions.GEN_INLIST(untrimmedline.histologycTypeIcdO3, "8120,8130")) || (Functions.GEN_INLIST(untrimmedline.primarySite, "420", "(C\\d\\d\\d)", 2, 3) && !Functions.GEN_INLIST(untrimmedline.histologycTypeIcdO3, "9761")) || (Functions.GEN_INLIST(untrimmedline.primarySite, "709", "(C\\d\\d\\d)", 2, 3) && Functions.GEN_INLIST(untrimmedline.histologycTypeIcdO3, "9530-9539") && Functions.GEN_INLIST(untrimmedline.classOfCase, "00-14")))
+    return false
+return true
