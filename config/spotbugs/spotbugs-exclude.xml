@@ -16,9 +16,14 @@
         <Bug code="MS"/>
     </Match>
     <Match>
-        <!-- the MetafileUtils should be cleaned up at some point, for not I am ignoring it -->
+        <!-- the MetafileUtils should be cleaned up at some point, for now I am ignoring it -->
         <Class name="com.imsweb.validation.translation.metafile.MetafileUtils"/>
         <Bug code="SQL"/>
+    </Match>
+    <Match>
+        <!-- something about hashing; that feature has been used for 20+ years without any issues, not worth changing -->
+        <Class name="com.imsweb.validation.translation.metafile.MetafileUtils"/>
+        <Bug code="NCR"/>
     </Match>
     <Match>
         <!-- Services/Engine allow to register a different instance; I don't know how to allow that without triggering this check -->

@@ -11,6 +11,7 @@ import com.imsweb.validation.translation.language.entity.*;
 /** CUP v0.11a beta 20060608 generated parser.
   * @version Sat Apr 04 10:20:21 EDT 2026
   */
+@SuppressWarnings("all")
 public class GeneditsParser extends java_cup.runtime.lr_parser {
 
   /** Default constructor. */

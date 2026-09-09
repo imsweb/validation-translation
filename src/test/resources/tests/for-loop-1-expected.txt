@@ -23,4 +23,4 @@ for (idx = 1; idx <= len - 3; idx = idx + 1) {
     if (compare == 0)
         return true
 }
-return true
+return Functions.GEN_SET_WARNING(binding)
