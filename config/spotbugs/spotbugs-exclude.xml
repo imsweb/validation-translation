@@ -22,7 +22,7 @@
     </Match>
     <Match>
         <!-- something about hashing; that feature has been used for 20+ years without any issues, not worth changing -->
-        <Class name="com.imsweb.validation.translation.metafile.MetafileUtils"/>
+        <Class name="com.imsweb.validation.translation.MetafileTranslator"/>
         <Bug code="NCR"/>
     </Match>
     <Match>
