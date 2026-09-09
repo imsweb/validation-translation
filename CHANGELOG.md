@@ -1,5 +1,10 @@
 ## Validation Translation Version History
 
+**Version 3.6**
+
+- Fixed behavior of edits that return WARN; they used to just return true, they now they will return a calls to GEN_SET_WARNING.
+- Updated dependencies.
+
 **Version 3.5**
 
 - Added support for embedded comments in expressions.

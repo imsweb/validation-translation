@@ -36,10 +36,12 @@ public class ReturnStatement extends Statement {
         // Genedits support returning an integer instead of a boolean
         if (exp instanceof LiteralExpression) {
             String literal = ((LiteralExpression)exp).getLiteral();
-            if ("TRUE".equalsIgnoreCase(literal) || "1".equalsIgnoreCase(literal) || "WARN".equalsIgnoreCase(literal))
+            if ("TRUE".equalsIgnoreCase(literal) || "1".equalsIgnoreCase(literal))
                 buf.append("true");
             else if ("FALSE".equalsIgnoreCase(literal) || "0".equalsIgnoreCase(literal))
                 buf.append("false");
+            else if ("WARN".equalsIgnoreCase(literal))
+                buf.append("Functions.GEN_SET_WARNING(binding)");
             else if (literal.matches("\\d+")) {
                 MetafileMessage msg = null;
                 for (MetafileMessage m : tContext.getEdit().getMessages())
